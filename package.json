@@ -19,5 +19,13 @@
   "bugs": {
     "url": "https://github.com/Sprillow/electron-holochain/issues"
   },
-  "homepage": "https://github.com/Sprillow/electron-holochain#readme"
+  "homepage": "https://github.com/Sprillow/electron-holochain#readme",
+  "devDependencies": {
+    "electron": "^12.0.6",
+    "typescript": "^4.3.5"
+  },
+  "dependencies": {
+    "electron-log": "^4.3.5",
+    "split": "^1.0.1"
+  }
 }

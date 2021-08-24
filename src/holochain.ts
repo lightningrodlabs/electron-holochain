@@ -59,18 +59,19 @@ function stdoutToStateSignal(string: string): StateSignal {
 
 export async function runHolochain(
   statusEmitter: StatusUpdates,
-  options: HolochainRunnerOptions
+  options: HolochainRunnerOptions,
+  holochainRunnerBinaryPath: string,
+  lairKeystoreBinaryPath: string
 ): Promise<childProcess.ChildProcessWithoutNullStreams[]> {
-  // temp
-  const holochainBinaryPath = ''
-  const lairBinaryPath = ''
-
-  const lairHandle = childProcess.spawn(lairBinaryPath, [
+  const lairHandle = childProcess.spawn(lairKeystoreBinaryPath, [
     '--lair-dir',
     options.keystorePath,
   ])
   const optionsArray = constructOptions(options)
-  const holochainHandle = childProcess.spawn(holochainBinaryPath, optionsArray)
+  const holochainHandle = childProcess.spawn(
+    holochainRunnerBinaryPath,
+    optionsArray
+  )
   return new Promise<childProcess.ChildProcessWithoutNullStreams[]>(
     (resolve, reject) => {
       // split divides up the stream line by line

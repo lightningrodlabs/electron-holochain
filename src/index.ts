@@ -2,10 +2,14 @@ import { App } from 'electron'
 import { HolochainRunnerOptions } from './options'
 import { runHolochain, StateSignal, StatusUpdates } from './holochain'
 
-// 
+// start up lair and holochain-runner processes,
+// automatically shut them down on app quit,
+// and emit events for status updates on their installation progress
 export default async function setup(
   app: App,
-  opts: HolochainRunnerOptions
+  opts: HolochainRunnerOptions,
+  holochainRunnerBinaryPath: string,
+  lairKeystoreBinaryPath: string
 ): Promise<StatusUpdates> {
   // wait for the app to be ready
   await app.whenReady()
@@ -17,7 +21,9 @@ export default async function setup(
     try {
       const [lairHandle, holochainHandle] = await runHolochain(
         statusEmitter,
-        opts
+        opts,
+        holochainRunnerBinaryPath,
+        lairKeystoreBinaryPath
       )
       app.on('will-quit', () => {
         // SIGTERM signal is the default, and that's good

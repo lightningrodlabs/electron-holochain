@@ -1,4 +1,8 @@
 # electron-holochain
+
+> Holochain Revision: [0.0.103 August 18, 2021](https://github.com/holochain/holochain/releases/tag/holochain-0.0.103)
+> Lair Revision: `0.0.3`
+
 manage holochain processes during an electron application runtime, using [holochain-runner binaries](https://github.com/Sprillow/holochain-runner).
 
 ```typescript

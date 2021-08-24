@@ -3,10 +3,11 @@ import { EventEmitter } from 'events'
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
 import * as split from 'split'
-import { constructOptions, HolochainRunnerOptions } from './options'
+import { constructOptions, HolochainRunnerOptions, PathOptions } from './options'
 
 type STATUS_EVENT = 'status'
 const STATUS_EVENT = 'status'
+export { STATUS_EVENT }
 
 export declare interface StatusUpdates {
   on(event: STATUS_EVENT, listener: (status: StateSignal) => void): this
@@ -60,9 +61,11 @@ function stdoutToStateSignal(string: string): StateSignal {
 export async function runHolochain(
   statusEmitter: StatusUpdates,
   options: HolochainRunnerOptions,
-  holochainRunnerBinaryPath: string,
-  lairKeystoreBinaryPath: string
+  pathOptions?: PathOptions
 ): Promise<childProcess.ChildProcessWithoutNullStreams[]> {
+  const lairKeystoreBinaryPath = pathOptions ? pathOptions.lairKeystoreBinaryPath : '' // set default
+  const holochainRunnerBinaryPath = pathOptions ? pathOptions.holochainRunnerBinaryPath : '' // set default
+  
   const lairHandle = childProcess.spawn(lairKeystoreBinaryPath, [
     '--lair-dir',
     options.keystorePath,

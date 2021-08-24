@@ -24,18 +24,27 @@ export function constructOptions(options: HolochainRunnerOptions): string[] {
   if (options.proxyUrl) {
     optionsArr = optionsArr.concat(['--proxy-url', options.proxyUrl])
   }
-
-  return optionsArr.concat([options.dnaPath, options.datastorePath])
+  // dnaPath is required
+  optionsArr = optionsArr.concat([options.dnaPath])
+  if (options.datastorePath) {
+    optionsArr = optionsArr.concat([options.datastorePath])
+  }
+  return optionsArr
 }
 
 // match the command line
 // options of holochain-runner
 export interface HolochainRunnerOptions {
   dnaPath: string
-  datastorePath: string
+  datastorePath?: string
   appId?: string
   appWsPort?: number
   adminWsPort?: number
   keystorePath?: string
   proxyUrl?: string
+}
+
+export interface PathOptions {
+  holochainRunnerBinaryPath: string,
+  lairKeystoreBinaryPath: string
 }

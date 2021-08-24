@@ -1,0 +1,23 @@
+{
+  "name": "electron-holochain",
+  "version": "0.0.1",
+  "description": "manage holochain processes during an electron application runtime",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sprillow/electron-holochain.git"
+  },
+  "keywords": [
+    "holochain",
+    "electron"
+  ],
+  "author": "Connor Turland <connor@sprillow.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Sprillow/electron-holochain/issues"
+  },
+  "homepage": "https://github.com/Sprillow/electron-holochain#readme"
+}

@@ -63,7 +63,14 @@ function stdoutToStateSignal(string: string): StateSignal {
   }
 }
 
-const isMac = process.platform === 'darwin'
+const translateOsMap = {
+  darwin: 'mac',
+  linux: 'linux',
+  win32: 'windows'
+}
+
+const defaultHolochainRunnerBinaryPath = path.join(__dirname, '../binaries', translateOsMap[process.platform], 'holochain-runner')
+const defaultLairKeystoreBinaryPath = path.join(__dirname, '../binaries', translateOsMap[process.platform], 'lair-keystore')
 
 export async function runHolochain(
   statusEmitter: StatusUpdates,
@@ -72,14 +79,10 @@ export async function runHolochain(
 ): Promise<childProcess.ChildProcessWithoutNullStreams[]> {
   const lairKeystoreBinaryPath = pathOptions
     ? pathOptions.lairKeystoreBinaryPath
-    : isMac
-    ? path.join(__dirname, '../binaries/mac/lair-keystore')
-    : ''
+    : defaultLairKeystoreBinaryPath
   const holochainRunnerBinaryPath = pathOptions
     ? pathOptions.holochainRunnerBinaryPath
-    : isMac
-    ? path.join(__dirname, '../binaries/mac/holochain-runner')
-    : ''
+    : defaultHolochainRunnerBinaryPath
 
   const lairHandle = childProcess.spawn(lairKeystoreBinaryPath, [
     '--lair-dir',

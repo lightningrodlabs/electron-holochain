@@ -6,14 +6,14 @@
 manage holochain processes during an electron application runtime, using [holochain-runner binaries](https://github.com/Sprillow/holochain-runner).
 
 ```typescript
-// function setup(
+// function initAgent(
 //   app: App,
 //   opts: HolochainRunnerOptions,
 //   pathOptions?: PathOptions
 // ): Promise<StatusUpdates>
 
 import {app} from 'electron'
-import setup, {
+import initAgent, {
   StateSignal,
   StatusUpdates,
   STATUS_EVENT,
@@ -31,7 +31,7 @@ const runnerOptions: HolochainRunnerOptions = {
   // proxyUrl?: string
 }
 
-const statusEmitter = await setup(app, runnerOptions)
+const statusEmitter = await initAgent(app, runnerOptions)
 
 // listen on the statusEmitter
 statusEmitter.on(STATUS_EVENT, (status: StateSignal) => {

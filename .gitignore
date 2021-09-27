@@ -1,3 +1,7 @@
+**/*.js
+databases
+keystore
+
 .DS_Store
 
 # Logs

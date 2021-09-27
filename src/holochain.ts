@@ -69,8 +69,8 @@ const translateOsMap = {
   win32: 'windows'
 }
 
-const defaultHolochainRunnerBinaryPath = path.join(__dirname, '../binaries', translateOsMap[process.platform], 'holochain-runner')
-const defaultLairKeystoreBinaryPath = path.join(__dirname, '../binaries', translateOsMap[process.platform], 'lair-keystore')
+const defaultHolochainRunnerBinaryPath = path.join(__dirname, '../binaries', translateOsMap[process.platform], `holochain-runner${process.platform === 'win32' ? '.exe' : ''}`)
+const defaultLairKeystoreBinaryPath = path.join(__dirname, '../binaries', translateOsMap[process.platform], `lair-keystore${process.platform === 'win32' ? '.exe' : ''}`)
 
 export async function runHolochain(
   statusEmitter: StatusUpdates,
@@ -88,6 +88,12 @@ export async function runHolochain(
     '--lair-dir',
     options.keystorePath,
   ])
+  lairHandle.stdout.on('error', (e) => {
+    console.log(e)
+  })
+  lairHandle.stderr.on('data', (e) => {
+    console.log(e.toString())
+  })
   const optionsArray = constructOptions(options)
   const holochainHandle = childProcess.spawn(
     holochainRunnerBinaryPath,
@@ -106,10 +112,12 @@ export async function runHolochain(
         }
       })
       holochainHandle.stdout.on('error', (e) => {
-        // reject()
+        console.log(e)
+        reject()
       })
       holochainHandle.stderr.on('data', (e) => {
-        // reject()
+        console.log(e.toString())
+        reject()
       })
     }
   )

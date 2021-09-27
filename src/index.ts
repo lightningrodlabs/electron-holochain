@@ -12,7 +12,7 @@ export { StateSignal, StatusUpdates, HolochainRunnerOptions, STATUS_EVENT, PathO
 // start up lair and holochain-runner processes,
 // automatically shut them down on app quit,
 // and emit events for status updates on their installation progress
-export default async function setup(
+export default async function initAgent(
   app: App,
   opts: HolochainRunnerOptions,
   binaryPaths?: PathOptions

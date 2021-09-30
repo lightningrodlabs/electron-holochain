@@ -37,7 +37,7 @@ async function downloadBinaries(tag: string) {
   fs.rmSync(binariesDirectory, { recursive: true, force: true })
   fs.mkdirSync(binariesDirectory)
   const holochainRunnerFilenames = {
-    win32: 'holochain-runner-x86_64-pc-windows-msvc.zip',
+    win32: 'holochain-runner-x86_64-pc-windows-msvc.tar.gz',
     darwin: 'holochain-runner-x86_64-apple-darwin.tar.gz',
     linux: 'holochain-runner-x86_64-unknown-linux-gnu.tar.gz'
   }
@@ -64,7 +64,7 @@ async function downloadBinaries(tag: string) {
 ;(async () => {
   try {
     // current holochain-runner release version
-    await downloadBinaries('v0.0.26')
+    await downloadBinaries('v0.0.27')
   } catch (e) {
     console.log(e)
   }

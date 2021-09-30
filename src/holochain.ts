@@ -1,5 +1,4 @@
 import * as childProcess from 'child_process'
-import * as path from 'path'
 import { EventEmitter } from 'events'
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
@@ -9,6 +8,7 @@ import {
   HolochainRunnerOptions,
   PathOptions,
 } from './options'
+import { defaultHolochainRunnerBinaryPath, defaultLairKeystoreBinaryPath } from './binaries'
 
 type STATUS_EVENT = 'status'
 const STATUS_EVENT = 'status'
@@ -62,15 +62,6 @@ function stdoutToStateSignal(string: string): StateSignal {
       return null
   }
 }
-
-const translateOsMap = {
-  darwin: 'mac',
-  linux: 'linux',
-  win32: 'windows'
-}
-
-const defaultHolochainRunnerBinaryPath = path.join(__dirname, '../binaries', translateOsMap[process.platform], `holochain-runner${process.platform === 'win32' ? '.exe' : ''}`)
-const defaultLairKeystoreBinaryPath = path.join(__dirname, '../binaries', translateOsMap[process.platform], `lair-keystore${process.platform === 'win32' ? '.exe' : ''}`)
 
 export async function runHolochain(
   statusEmitter: StatusUpdates,

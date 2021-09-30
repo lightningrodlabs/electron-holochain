@@ -2,16 +2,14 @@ import * as path from 'path'
 import {app} from 'electron'
 import initAgent, {
   StateSignal,
-  StatusUpdates,
   STATUS_EVENT,
   HolochainRunnerOptions,
-  PathOptions
 } from '../src'
 
 const runnerOptions: HolochainRunnerOptions = {
-  dnaPath: path.join(__dirname, 'profiles.dna'),
-  // datastorePath?: 'string'
-  // keystorePath?: string
+  dnaPath: path.join(__dirname, '../../test/profiles.dna'),
+  datastorePath: path.join(__dirname, '../../test/data/databases'),
+  keystorePath: path.join(__dirname, '../../test/data/keystore')
   // appId?: string
   // appWsPort?: number
   // adminWsPort?: number

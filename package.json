@@ -4,6 +4,7 @@
   "description": "manage holochain processes during an electron application runtime",
   "main": "dist/src/index.js",
   "scripts": {
+    "build": "tsc",
     "test": "tsc && npx electron ./dist/test/run-test.js",
     "try-binary-download": "tsc && node ./dist/src/downloadBinaries.js",
     "postinstall": "node ./dist/src/downloadBinaries.js"

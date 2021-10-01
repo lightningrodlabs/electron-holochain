@@ -1,7 +1,8 @@
 # electron-holochain
 
-> Holochain Revision: [0.0.103 August 18, 2021](https://github.com/holochain/holochain/releases/tag/holochain-0.0.103)
-> Lair Revision: `0.0.3`
+> Holochain Revision: [0.0.108 September 29, 2021](https://github.com/holochain/holochain/releases/tag/holochain-0.0.108)
+
+> Lair Revision: [@GuillemCordoba vendored-openssl fork of 0.0.4](https://github.com/guillemcordoba/lair/commit/54e8168a15bc9b1a5f8a8222e97e66fa85794883)
 
 manage holochain processes during an electron application runtime, using [holochain-runner binaries](https://github.com/Sprillow/holochain-runner).
 
@@ -23,11 +24,11 @@ import initAgent, {
 
 const runnerOptions: HolochainRunnerOptions = {
   dnaPath: 'pathtomydna.dna',
-  // datastorePath?: 'string'
+  // datastorePath?: 'string' default: databases
   // appId?: string
   // appWsPort?: number
   // adminWsPort?: number
-  // keystorePath?: string
+  // keystorePath?: string default: keystore
   // proxyUrl?: string
 }
 

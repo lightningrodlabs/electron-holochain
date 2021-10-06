@@ -1,8 +1,8 @@
 # electron-holochain
 
-> Holochain Revision: [0.0.108 September 29, 2021](https://github.com/holochain/holochain/releases/tag/holochain-0.0.108)
+> Holochain Revision: [0.0.109 -- Oct 6, 2021](https://github.com/holochain/holochain/releases/tag/holochain-0.0.109)
 
-> Lair Revision: [@GuillemCordoba vendored-openssl fork of 0.0.4](https://github.com/guillemcordoba/lair/commit/54e8168a15bc9b1a5f8a8222e97e66fa85794883)
+> Lair Revision: [0.0.7 -- Oct 4, 2021](https://github.com/holochain/lair/releases/tag/v0.0.7)
 
 manage holochain processes during an electron application runtime, using [holochain-runner binaries](https://github.com/Sprillow/holochain-runner).
 

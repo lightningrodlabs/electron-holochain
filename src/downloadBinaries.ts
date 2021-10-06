@@ -22,7 +22,7 @@ async function download(url: string, dest: string) {
     })
       .pipe(file)
       .on('finish', async () => {
-        console.log(`The file is finished downloading.`)
+        console.log(`${dest} is finished downloading.`)
         resolve()
       })
       .on('error', (error: Error) => {
@@ -64,7 +64,9 @@ async function downloadBinaries(tag: string) {
 ;(async () => {
   try {
     // current holochain-runner release version
-    await downloadBinaries('v0.0.27')
+    // version-bump
+    const holochainRunnerTag = 'v0.0.28'
+    await downloadBinaries(holochainRunnerTag)
   } catch (e) {
     console.log(e)
   }

@@ -1,8 +1,8 @@
 # electron-holochain
 
-> Holochain Revision: [0.0.109 -- Oct 6, 2021](https://github.com/holochain/holochain/releases/tag/holochain-0.0.109)
+> Holochain Revision: [0.0.115 -- Nov 10, 2021](https://github.com/holochain/holochain/releases/tag/holochain-0.0.115)
 
-> Lair Revision: [0.0.7 -- Oct 4, 2021](https://github.com/holochain/lair/releases/tag/v0.0.7)
+> Lair Revision: [0.0.9 -- Nov 4, 2021](https://github.com/holochain/lair/releases/tag/v0.0.9)
 
 manage holochain processes during an electron application runtime, using [holochain-runner binaries](https://github.com/Sprillow/holochain-runner).
 
@@ -30,6 +30,7 @@ const runnerOptions: HolochainRunnerOptions = {
   // adminWsPort?: number
   // keystorePath?: string default: keystore
   // proxyUrl?: string
+  // membraneProof?: string
 }
 
 const statusEmitter = await initAgent(app, runnerOptions)

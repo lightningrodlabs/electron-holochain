@@ -27,6 +27,12 @@ export function constructOptions(options: HolochainRunnerOptions): string[] {
   if (options.membraneProof) {
     optionsArr = optionsArr.concat(['--membrane-proof', options.membraneProof])
   }
+  if (options.bootstrapUrl) {
+    optionsArr = optionsArr.concat(['--bootstrap-url', options.bootstrapUrl])
+  }
+  if (options.uid) {
+    optionsArr = optionsArr.concat(['--uid', options.uid])
+  }
   // dnaPath is required
   optionsArr = optionsArr.concat([options.dnaPath])
   if (options.datastorePath) {
@@ -46,6 +52,8 @@ export interface HolochainRunnerOptions {
   keystorePath?: string
   proxyUrl?: string
   membraneProof?: string // base64
+  bootstrapUrl?: string
+  uid?: string
 }
 
 export interface PathOptions {

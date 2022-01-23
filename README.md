@@ -31,6 +31,8 @@ const runnerOptions: HolochainRunnerOptions = {
   // keystorePath?: string default: keystore
   // proxyUrl?: string
   // membraneProof?: string
+  // bootstrapUrl?: string
+  // uid?: string
 }
 
 const statusEmitter = await initAgent(app, runnerOptions)

@@ -1,8 +1,10 @@
 # electron-holochain
 
-> Holochain Revision: [0.0.115 -- Nov 10, 2021](https://github.com/holochain/holochain/releases/tag/holochain-0.0.115)
-
-> Lair Revision: [0.0.9 -- Nov 4, 2021](https://github.com/holochain/lair/releases/tag/v0.0.9)
+> Holochain Revision: [v0.0.115 Nov 10, 2021](https://github.com/holochain/holochain/releases/tag/holochain-0.0.115)
+> 
+> Lair Keystore Revision: [v0.0.9 Nov 4, 2021](https://github.com/holochain/lair/releases/tag/v0.0.9)
+>
+> Expects a DNA built with HDK [v0.0.115](https://docs.rs/hdk/0.0.115/hdk/index.html)
 
 manage holochain processes during an electron application runtime, using [holochain-runner binaries](https://github.com/Sprillow/holochain-runner).
 
@@ -31,6 +33,8 @@ const runnerOptions: HolochainRunnerOptions = {
   // keystorePath?: string default: keystore
   // proxyUrl?: string
   // membraneProof?: string
+  // bootstrapUrl?: string
+  // uid?: string
 }
 
 const statusEmitter = await initAgent(app, runnerOptions)

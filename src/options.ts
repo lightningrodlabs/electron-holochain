@@ -27,8 +27,8 @@ export function constructOptions(options: HolochainRunnerOptions): string[] {
   if (options.membraneProof) {
     optionsArr = optionsArr.concat(['--membrane-proof', options.membraneProof])
   }
-  if (options.boostrapUrl) {
-    optionsArr = optionsArr.concat(['--bootstrap-url', options.boostrapUrl])
+  if (options.bootstrapUrl) {
+    optionsArr = optionsArr.concat(['--bootstrap-url', options.bootstrapUrl])
   }
   if (options.uid) {
     optionsArr = optionsArr.concat(['--uid', options.uid])
@@ -52,7 +52,7 @@ export interface HolochainRunnerOptions {
   keystorePath?: string
   proxyUrl?: string
   membraneProof?: string // base64
-  boostrapUrl?: string
+  bootstrapUrl?: string
   uid?: string
 }
 

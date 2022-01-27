@@ -85,18 +85,19 @@ export async function runHolochain(
     options.keystorePath,
   ])
   lairHandle.stdout.on('error', (e) => {
-    console.log(e)
+    console.error(e)
   })
   lairHandle.stderr.on('data', (e) => {
-    console.log(e.toString())
+    console.error(e.toString())
   })
+
   const optionsArray = constructOptions(options)
   const holochainHandle = childProcess.spawn(
     holochainRunnerBinaryPath,
     optionsArray
   )
   return new Promise<childProcess.ChildProcessWithoutNullStreams[]>(
-    (resolve, reject) => {
+    (resolve, _reject) => {
       let isReady = false;
       let hasAppPort = false;
       // split divides up the stream line by line
@@ -122,12 +123,10 @@ export async function runHolochain(
         }
       })
       holochainHandle.stdout.on('error', (e) => {
-        console.error("holochain error > " + e)
-        reject()
+        console.error("holochain err > " + e)
       })
       holochainHandle.stderr.on('data', (e) => {
-        console.error("holochain error > " + e.toString())
-        reject()
+        console.error("holochain err > " + e.toString())
       })
     }
   )

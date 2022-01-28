@@ -20,6 +20,7 @@ import initAgent, {
   StateSignal,
   StatusUpdates,
   STATUS_EVENT,
+  APP_PORT_EVENT,
   HolochainRunnerOptions,
   PathOptions
 } from 'electron-holochain'
@@ -39,10 +40,14 @@ const runnerOptions: HolochainRunnerOptions = {
 
 const statusEmitter = await initAgent(app, runnerOptions)
 
-// listen on the statusEmitter
+// listen on the statusEmitter for status update
 statusEmitter.on(STATUS_EVENT, (status: StateSignal) => {
   // do stuff
 })
 
+// listen on the statusEmitter for the websocket port used for app
+statusEmitter.on(APP_PORT_EVENT, (appPort: string) => {
+  // do stuff
+}
 // when the app quits, holochain-runner and lair-keystore will shut down automatically
 ```

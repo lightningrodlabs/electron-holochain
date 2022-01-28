@@ -57,6 +57,7 @@ function sleep(ms) {
  */
 async function killHolochain(lairHandle: childProcess.ChildProcessWithoutNullStreams,
                              holochainHandle: childProcess.ChildProcessWithoutNullStreams) {
+  // Kill holochain and its children
   let canWaitForHolochain = false;
   if(holochainHandle && holochainHandle.pid) {
     canWaitForHolochain = true;
@@ -70,6 +71,7 @@ async function killHolochain(lairHandle: childProcess.ChildProcessWithoutNullStr
       }
     });
   }
+  // Kill lair-keystore and its children
   let canWaitForKeystore = false;
   if(lairHandle && lairHandle.pid) {
     canWaitForKeystore = true;
@@ -83,7 +85,7 @@ async function killHolochain(lairHandle: childProcess.ChildProcessWithoutNullStr
       }
     });
   }
-  // Wait for the kill commands to complete
+  // Wait for the kill commands to complete and exit anyway after a timeout
   console.debug('waiting...');
   const start_time = Date.now()
   while(canWaitForHolochain || canWaitForKeystore) {

@@ -12,15 +12,20 @@ import { defaultHolochainRunnerBinaryPath, defaultLairKeystoreBinaryPath } from 
 
 type STATUS_EVENT = 'status'
 const STATUS_EVENT = 'status'
-export { STATUS_EVENT }
+type APP_PORT_EVENT = 'port'
+const APP_PORT_EVENT = 'port'
+export { STATUS_EVENT, APP_PORT_EVENT }
 
 export declare interface StatusUpdates {
-  on(event: STATUS_EVENT, listener: (status: StateSignal) => void): this
+  on(event: STATUS_EVENT | APP_PORT_EVENT, listener: (status: StateSignal | string) => void): this
 }
 
 export class StatusUpdates extends EventEmitter {
   emitStatus(status: StateSignal): void {
     this.emit(STATUS_EVENT, status)
+  }
+  emitAppPort(port: string): void {
+    this.emit(APP_PORT_EVENT, port)
   }
 }
 
@@ -80,36 +85,59 @@ export async function runHolochain(
     options.keystorePath,
   ])
   lairHandle.stdout.on('error', (e) => {
-    console.log(e)
+    console.error(e)
   })
   lairHandle.stderr.on('data', (e) => {
-    console.log(e.toString())
+    console.error(e.toString())
   })
+
   const optionsArray = constructOptions(options)
   const holochainHandle = childProcess.spawn(
     holochainRunnerBinaryPath,
     optionsArray
   )
   return new Promise<childProcess.ChildProcessWithoutNullStreams[]>(
-    (resolve, reject) => {
+    (resolve, _reject) => {
+      let isReady = false;
+      let hasAppPort = false;
       // split divides up the stream line by line
       holochainHandle.stdout.pipe(split()).on('data', (line: string) => {
+        console.debug("holochain > " + line)
+        // Check for state signal
         const checkIfSignal = stdoutToStateSignal(line)
         if (checkIfSignal === StateSignal.IsReady) {
-          resolve([lairHandle, holochainHandle])
+          isReady = true;
         }
         if (checkIfSignal !== null) {
           statusEmitter.emitStatus(checkIfSignal)
         }
+        // Check for app port
+        const appPort = parseForAppPort(line)
+        if (appPort !== null) {
+          statusEmitter.emitAppPort(appPort)
+          hasAppPort = true;
+        }
+        // Resolve once everything has been emitted
+        if (isReady && hasAppPort) {
+          resolve([lairHandle, holochainHandle])
+        }
       })
       holochainHandle.stdout.on('error', (e) => {
-        console.log(e)
-        reject()
+        console.error("holochain err > " + e)
       })
       holochainHandle.stderr.on('data', (e) => {
-        console.log(e.toString())
-        reject()
+        console.error("holochain err > " + e.toString())
       })
     }
   )
+}
+
+function parseForAppPort(line:string): string | null {
+  let regex = /APP_WS_PORT: ([0-9]*)/gm;
+  let match = regex.exec(line);
+  // console.log({match});
+  if (match === undefined || match === null || match.length === 0) {
+    return null;
+  }
+  return match[1];
 }

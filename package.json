@@ -1,6 +1,6 @@
 {
   "name": "electron-holochain",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "description": "manage holochain processes during an electron application runtime",
   "main": "dist/src/index.js",
   "scripts": {

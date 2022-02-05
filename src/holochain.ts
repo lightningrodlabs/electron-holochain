@@ -116,14 +116,20 @@ export async function runHolochain(
     '--lair-dir',
     options.keystorePath,
   ])
-  lairHandle.stdout.on('error', (e) => {
-    console.error(e)
+  lairHandle.stdout.on('error', (error) => {
+    console.error('lair-keystore stdout err > ' + error)
+    statusEmitter.emitError(error)
   })
-  lairHandle.stderr.on('data', (e) => {
-    console.error(e.toString())
+  lairHandle.stderr.on('data', (error) => {
+    console.error('lair-keystore stderr err' + error.toString())
+    statusEmitter.emitError(error)
+  })
+  lairHandle.on('error', (error) => {
+    console.error('lair-keystore err > ' + error.toString())
+    statusEmitter.emitError(error)
   })
   lairHandle.on('close', (code) => {
-    console.log('lair keystore closed with code: ', code)
+    console.log('lair-keystore closed with code: ', code)
     statusEmitter.emitLairKeystoreQuit()
   })
 
@@ -132,47 +138,41 @@ export async function runHolochain(
     holochainRunnerBinaryPath,
     optionsArray
   )
-  return new Promise<{
-    lairHandle: childProcess.ChildProcessWithoutNullStreams
-    holochainRunnerHandle: childProcess.ChildProcessWithoutNullStreams
-  }>((resolve, _reject) => {
-    let isReady = false
-    let hasAppPort = false
-    // split divides up the stream line by line
-    holochainRunnerHandle.stdout.pipe(split()).on('data', (line: string) => {
-      console.debug('holochain > ' + line)
-      // Check for state signal
-      const checkIfSignal = stdoutToStateSignal(line)
-      if (checkIfSignal === StateSignal.IsReady) {
-        isReady = true
-      }
-      if (checkIfSignal !== null) {
-        statusEmitter.emitStatus(checkIfSignal)
-      }
-      // Check for app port
-      const appPort = parseForAppPort(line)
-      if (appPort !== null) {
-        statusEmitter.emitAppPort(appPort)
-        hasAppPort = true
-      }
-      // Resolve once everything has been emitted
-      if (isReady && hasAppPort) {
-        resolve({ lairHandle, holochainRunnerHandle })
-      }
-    })
-    holochainRunnerHandle.stdout.on('error', (e) => {
-      console.error('holochain stdout err > ' + e)
-      statusEmitter.emitError(e)
-    })
-    holochainRunnerHandle.stderr.on('data', (e) => {
-      console.error('holochain stderr err > ' + e.toString())
-      statusEmitter.emitError(new Error(e.toString()))
-    })
-    holochainRunnerHandle.on('close', (code) => {
-      console.log('holochain runner closed with code: ', code)
-      statusEmitter.emitHolochainRunnerQuit()
-    })
+  // split divides up the stream line by line
+  holochainRunnerHandle.stdout.pipe(split()).on('data', (line: string) => {
+    console.debug('holochain > ' + line)
+    // Check for state signal
+    const checkIfSignal = stdoutToStateSignal(line)
+    if (checkIfSignal !== null) {
+      statusEmitter.emitStatus(checkIfSignal)
+    }
+    // Check for app port
+    const appPort = parseForAppPort(line)
+    if (appPort !== null) {
+      statusEmitter.emitAppPort(appPort)
+    }
   })
+  holochainRunnerHandle.stdout.on('error', (error) => {
+    console.error('holochain stdout err > ' + error)
+    statusEmitter.emitError(error)
+  })
+  holochainRunnerHandle.stderr.on('data', (error) => {
+    console.error('holochain stderr err > ' + error.toString())
+    statusEmitter.emitError(new Error(error.toString()))
+  })
+  holochainRunnerHandle.on('error', (error) => {
+    console.error('holochain err > ' + error.toString())
+    statusEmitter.emitError(error)
+  })
+  holochainRunnerHandle.on('close', (code) => {
+    console.log('holochain-runner closed with code: ', code)
+    statusEmitter.emitHolochainRunnerQuit()
+  })
+
+  return {
+    lairHandle,
+    holochainRunnerHandle,
+  }
 }
 
 function parseForAppPort(line: string): string | null {

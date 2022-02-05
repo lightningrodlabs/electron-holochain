@@ -13,7 +13,7 @@ manage holochain processes during an electron application runtime, using [holoch
 //   app: App,
 //   opts: HolochainRunnerOptions,
 //   pathOptions?: PathOptions
-// ): Promise<StatusUpdates>
+// ): Promise<{ statusEmitter: StatusUpdates, shutdown: () => Promise<void> }>
 
 import {app} from 'electron'
 import initAgent, {
@@ -38,7 +38,7 @@ const runnerOptions: HolochainRunnerOptions = {
   // uid?: string
 }
 
-const statusEmitter = await initAgent(app, runnerOptions)
+const { statusEmitter, shutdown } = await initAgent(app, runnerOptions)
 
 // listen on the statusEmitter for status update
 statusEmitter.on(STATUS_EVENT, (status: StateSignal) => {
@@ -50,4 +50,7 @@ statusEmitter.on(APP_PORT_EVENT, (appPort: string) => {
   // do stuff
 }
 // when the app quits, holochain-runner and lair-keystore will shut down automatically
+
+// you can also call the following, to shut them down
+await shutdown()
 ```

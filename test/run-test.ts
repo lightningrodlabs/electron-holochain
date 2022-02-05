@@ -18,7 +18,7 @@ const runnerOptions: HolochainRunnerOptions = {
 
 app.on('ready', async () => {
     try {
-        const statusEmitter = await initAgent(app, runnerOptions)
+        const { statusEmitter } = await initAgent(app, runnerOptions)
         statusEmitter.on(STATUS_EVENT, (state: StateSignal) => {
             console.log('holochain-runner state:', state)
         })

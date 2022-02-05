@@ -39,23 +39,26 @@ export default async function initAgent(
   // so that we can continue and return
   // the statusEmitter to the caller
   let lairHandle: childProcess.ChildProcessWithoutNullStreams
-  let holochainHandle: childProcess.ChildProcessWithoutNullStreams
+  let holochainRunnerHandle: childProcess.ChildProcessWithoutNullStreams
   ;(async () => {
-    ;[lairHandle, holochainHandle] = await runHolochain(
+    let handles = await runHolochain(
       statusEmitter,
       opts,
       binaryPaths
     )
+    lairHandle = handles.lairHandle
+    holochainRunnerHandle = handles.holochainRunnerHandle
+
     app.on('will-quit', async () => {
       // SIGTERM signal is the default, and that's good
-      await killHolochain(lairHandle, holochainHandle)
+      await killHolochain(lairHandle, holochainRunnerHandle)
     })
   })()
   return {
     statusEmitter,
     shutdown: async () => {
       // SIGTERM signal is the default, and that's good
-      await killHolochain(lairHandle, holochainHandle)
+      await killHolochain(lairHandle, holochainRunnerHandle)
     },
   }
 }
@@ -72,14 +75,14 @@ function sleep(ms) {
  */
 async function killHolochain(
   lairHandle: childProcess.ChildProcessWithoutNullStreams,
-  holochainHandle: childProcess.ChildProcessWithoutNullStreams
+  holochainRunnerHandle: childProcess.ChildProcessWithoutNullStreams
 ) {
   // Kill holochain and its children
   let canWaitForHolochain = false
-  if (holochainHandle && holochainHandle.pid) {
+  if (holochainRunnerHandle && holochainRunnerHandle.pid) {
     canWaitForHolochain = true
     console.debug('Killing holochain sub processes...')
-    kill(holochainHandle.pid, function (err) {
+    kill(holochainRunnerHandle.pid, function (err) {
       canWaitForHolochain = false
       if (!err) {
         console.debug('killed all holochain sub processes')

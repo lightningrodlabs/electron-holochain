@@ -101,7 +101,10 @@ export async function runHolochain(
   statusEmitter: StatusUpdates,
   options: HolochainRunnerOptions,
   pathOptions?: PathOptions
-): Promise<childProcess.ChildProcessWithoutNullStreams[]> {
+): Promise<{
+  lairHandle: childProcess.ChildProcessWithoutNullStreams
+  holochainRunnerHandle: childProcess.ChildProcessWithoutNullStreams
+}> {
   const lairKeystoreBinaryPath = pathOptions
     ? pathOptions.lairKeystoreBinaryPath
     : defaultLairKeystoreBinaryPath
@@ -125,50 +128,51 @@ export async function runHolochain(
   })
 
   const optionsArray = constructOptions(options)
-  const holochainHandle = childProcess.spawn(
+  const holochainRunnerHandle = childProcess.spawn(
     holochainRunnerBinaryPath,
     optionsArray
   )
-  return new Promise<childProcess.ChildProcessWithoutNullStreams[]>(
-    (resolve, _reject) => {
-      let isReady = false
-      let hasAppPort = false
-      // split divides up the stream line by line
-      holochainHandle.stdout.pipe(split()).on('data', (line: string) => {
-        console.debug('holochain > ' + line)
-        // Check for state signal
-        const checkIfSignal = stdoutToStateSignal(line)
-        if (checkIfSignal === StateSignal.IsReady) {
-          isReady = true
-        }
-        if (checkIfSignal !== null) {
-          statusEmitter.emitStatus(checkIfSignal)
-        }
-        // Check for app port
-        const appPort = parseForAppPort(line)
-        if (appPort !== null) {
-          statusEmitter.emitAppPort(appPort)
-          hasAppPort = true
-        }
-        // Resolve once everything has been emitted
-        if (isReady && hasAppPort) {
-          resolve([lairHandle, holochainHandle])
-        }
-      })
-      holochainHandle.stdout.on('error', (e) => {
-        console.error('holochain stdout err > ' + e)
-        statusEmitter.emitError(e)
-      })
-      holochainHandle.stderr.on('data', (e) => {
-        console.error('holochain stderr err > ' + e.toString())
-        statusEmitter.emitError(new Error(e.toString()))
-      })
-      holochainHandle.on('close', (code) => {
-        console.log('holochain runner closed with code: ', code)
-        statusEmitter.emitHolochainRunnerQuit()
-      })
-    }
-  )
+  return new Promise<{
+    lairHandle: childProcess.ChildProcessWithoutNullStreams
+    holochainRunnerHandle: childProcess.ChildProcessWithoutNullStreams
+  }>((resolve, _reject) => {
+    let isReady = false
+    let hasAppPort = false
+    // split divides up the stream line by line
+    holochainRunnerHandle.stdout.pipe(split()).on('data', (line: string) => {
+      console.debug('holochain > ' + line)
+      // Check for state signal
+      const checkIfSignal = stdoutToStateSignal(line)
+      if (checkIfSignal === StateSignal.IsReady) {
+        isReady = true
+      }
+      if (checkIfSignal !== null) {
+        statusEmitter.emitStatus(checkIfSignal)
+      }
+      // Check for app port
+      const appPort = parseForAppPort(line)
+      if (appPort !== null) {
+        statusEmitter.emitAppPort(appPort)
+        hasAppPort = true
+      }
+      // Resolve once everything has been emitted
+      if (isReady && hasAppPort) {
+        resolve({ lairHandle, holochainRunnerHandle })
+      }
+    })
+    holochainRunnerHandle.stdout.on('error', (e) => {
+      console.error('holochain stdout err > ' + e)
+      statusEmitter.emitError(e)
+    })
+    holochainRunnerHandle.stderr.on('data', (e) => {
+      console.error('holochain stderr err > ' + e.toString())
+      statusEmitter.emitError(new Error(e.toString()))
+    })
+    holochainRunnerHandle.on('close', (code) => {
+      console.log('holochain runner closed with code: ', code)
+      statusEmitter.emitHolochainRunnerQuit()
+    })
+  })
 }
 
 function parseForAppPort(line: string): string | null {

@@ -14,10 +14,12 @@ type STATUS_EVENT = 'status'
 const STATUS_EVENT = 'status'
 type APP_PORT_EVENT = 'port'
 const APP_PORT_EVENT = 'port'
-export { STATUS_EVENT, APP_PORT_EVENT }
+type ERROR_EVENT = 'error'
+const ERROR_EVENT = 'error'
+export { STATUS_EVENT, APP_PORT_EVENT, ERROR_EVENT }
 
 export declare interface StatusUpdates {
-  on(event: STATUS_EVENT | APP_PORT_EVENT, listener: (status: StateSignal | string) => void): this
+  on(event: STATUS_EVENT | APP_PORT_EVENT | ERROR_EVENT, listener: (status: StateSignal | string | Error) => void): this
 }
 
 export class StatusUpdates extends EventEmitter {
@@ -26,6 +28,9 @@ export class StatusUpdates extends EventEmitter {
   }
   emitAppPort(port: string): void {
     this.emit(APP_PORT_EVENT, port)
+  }
+  emitError(error: Error): void {
+    this.emit(ERROR_EVENT, error)
   }
 }
 
@@ -38,9 +43,6 @@ export enum StateSignal {
   EnablingApp,
   AddingAppInterface,
   IsReady,
-  // error states
-  FailedToStart,
-  Crashed,
 }
 
 function stdoutToStateSignal(string: string): StateSignal {
@@ -123,10 +125,12 @@ export async function runHolochain(
         }
       })
       holochainHandle.stdout.on('error', (e) => {
-        console.error("holochain err > " + e)
+        console.error("holochain stdout err > " + e)
+        statusEmitter.emitError(e)
       })
       holochainHandle.stderr.on('data', (e) => {
-        console.error("holochain err > " + e.toString())
+        console.error("holochain stderr err > " + e.toString())
+        statusEmitter.emitError(new Error(e.toString()))
       })
     }
   )

@@ -22,25 +22,33 @@ export default async function initAgent(
   app: App,
   opts: HolochainRunnerOptions,
   binaryPaths?: PathOptions
-): Promise<StatusUpdates> {
+): Promise<{ statusEmitter: StatusUpdates, shutdown: () => Promise<void> }> {
   // wait for the app to be ready
   await app.whenReady()
   const statusEmitter = new StatusUpdates()
   // execute this in a callback
   // so that we can continue and return
   // the statusEmitter to the caller
+  let lairHandle: childProcess.ChildProcessWithoutNullStreams
+  let holochainHandle: childProcess.ChildProcessWithoutNullStreams
   ;(async () => {
-      const [lairHandle, holochainHandle] = await runHolochain(
+      [lairHandle, holochainHandle] = await runHolochain(
         statusEmitter,
         opts,
         binaryPaths
       )
       app.on('will-quit', async () => {
         // SIGTERM signal is the default, and that's good
-        await killHolochain(lairHandle, holochainHandle);
+        await killHolochain(lairHandle, holochainHandle)
       })
   })()
-  return statusEmitter
+  return {
+    statusEmitter,
+    shutdown: async () => {
+      // SIGTERM signal is the default, and that's good
+      await killHolochain(lairHandle, holochainHandle)
+    }
+  }
 }
 
 

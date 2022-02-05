@@ -19,11 +19,26 @@ type APP_PORT_EVENT = 'port'
 const APP_PORT_EVENT = 'port'
 type ERROR_EVENT = 'error'
 const ERROR_EVENT = 'error'
-export { STATUS_EVENT, APP_PORT_EVENT, ERROR_EVENT }
+type HOLOCHAIN_RUNNER_QUIT = 'holochain_runner_quit'
+const HOLOCHAIN_RUNNER_QUIT = 'holochain_runner_quit'
+type LAIR_KEYSTORE_QUIT = 'lair_keystore_quit'
+const LAIR_KEYSTORE_QUIT = 'lair_keystore_quit'
+export {
+  STATUS_EVENT,
+  APP_PORT_EVENT,
+  ERROR_EVENT,
+  LAIR_KEYSTORE_QUIT,
+  HOLOCHAIN_RUNNER_QUIT,
+}
 
 export declare interface StatusUpdates {
   on(
-    event: STATUS_EVENT | APP_PORT_EVENT | ERROR_EVENT,
+    event:
+      | STATUS_EVENT
+      | APP_PORT_EVENT
+      | ERROR_EVENT
+      | LAIR_KEYSTORE_QUIT
+      | HOLOCHAIN_RUNNER_QUIT,
     listener: (status: StateSignal | string | Error) => void
   ): this
 }
@@ -37,6 +52,12 @@ export class StatusUpdates extends EventEmitter {
   }
   emitError(error: Error): void {
     this.emit(ERROR_EVENT, error)
+  }
+  emitHolochainRunnerQuit(): void {
+    this.emit(HOLOCHAIN_RUNNER_QUIT)
+  }
+  emitLairKeystoreQuit(): void {
+    this.emit(LAIR_KEYSTORE_QUIT)
   }
 }
 
@@ -98,6 +119,10 @@ export async function runHolochain(
   lairHandle.stderr.on('data', (e) => {
     console.error(e.toString())
   })
+  lairHandle.on('close', (code) => {
+    console.log('lair keystore closed with code: ', code)
+    statusEmitter.emitLairKeystoreQuit()
+  })
 
   const optionsArray = constructOptions(options)
   const holochainHandle = childProcess.spawn(
@@ -137,6 +162,10 @@ export async function runHolochain(
       holochainHandle.stderr.on('data', (e) => {
         console.error('holochain stderr err > ' + e.toString())
         statusEmitter.emitError(new Error(e.toString()))
+      })
+      holochainHandle.on('close', (code) => {
+        console.log('holochain runner closed with code: ', code)
+        statusEmitter.emitHolochainRunnerQuit()
       })
     }
   )

@@ -7,7 +7,7 @@ import initAgent, {
 } from '../src'
 
 const runnerOptions: HolochainRunnerOptions = {
-  dnaPath: path.join(__dirname, '../../test/profiles.dna'),
+  happPath: path.join(__dirname, '../../test/hrea_suite.happ'),
   datastorePath: path.join(__dirname, '../../test/data/databases'),
   keystorePath: path.join(__dirname, '../../test/data/keystore')
   // appId?: string

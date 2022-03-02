@@ -24,9 +24,9 @@ export function constructOptions(options: HolochainRunnerOptions): string[] {
   if (options.proxyUrl) {
     optionsArr = optionsArr.concat(['--proxy-url', options.proxyUrl])
   }
-  if (options.membraneProof) {
-    optionsArr = optionsArr.concat(['--membrane-proof', options.membraneProof])
-  }
+  // if (options.membraneProof) {
+  //   optionsArr = optionsArr.concat(['--membrane-proof', options.membraneProof])
+  // }
   if (options.bootstrapUrl) {
     optionsArr = optionsArr.concat(['--bootstrap-url', options.bootstrapUrl])
   }
@@ -34,7 +34,7 @@ export function constructOptions(options: HolochainRunnerOptions): string[] {
     optionsArr = optionsArr.concat(['--uid', options.uid])
   }
   // dnaPath is required
-  optionsArr = optionsArr.concat([options.dnaPath])
+  optionsArr = optionsArr.concat([options.happPath])
   if (options.datastorePath) {
     optionsArr = optionsArr.concat([options.datastorePath])
   }
@@ -44,14 +44,14 @@ export function constructOptions(options: HolochainRunnerOptions): string[] {
 // match the command line
 // options of holochain-runner
 export interface HolochainRunnerOptions {
-  dnaPath: string
+  happPath: string
   datastorePath?: string
   appId?: string
   appWsPort?: number
   adminWsPort?: number
   keystorePath?: string
   proxyUrl?: string
-  membraneProof?: string // base64
+  // membraneProof?: string // base64
   bootstrapUrl?: string
   uid?: string
 }

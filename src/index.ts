@@ -6,6 +6,9 @@ import {
   StatusUpdates,
   STATUS_EVENT,
   APP_PORT_EVENT,
+  ERROR_EVENT,
+  LAIR_KEYSTORE_QUIT,
+  HOLOCHAIN_RUNNER_QUIT,  
 } from './holochain'
 import {
   defaultHolochainRunnerBinaryPath,
@@ -22,6 +25,9 @@ export {
   STATUS_EVENT,
   PathOptions,
   APP_PORT_EVENT,
+  ERROR_EVENT,
+  LAIR_KEYSTORE_QUIT,
+  HOLOCHAIN_RUNNER_QUIT,  
 }
 
 // start up lair and holochain-runner processes,

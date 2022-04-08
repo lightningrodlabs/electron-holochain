@@ -1,10 +1,10 @@
 # electron-holochain
 
-> Holochain Revision: [v0.0.126 Feb 11, 2022](https://github.com/holochain/holochain/releases/tag/holochain-0.0.126)
+> Holochain Revision: [v0.0.127 Feb 23, 2022](https://github.com/holochain/holochain/releases/tag/holochain-0.0.127)
 > 
 > Lair Keystore Revision: [v0.0.9 Nov 4, 2021](https://github.com/holochain/lair/releases/tag/v0.0.9)
 >
-> Expects an HAPP built with HDK [v0.0.122](https://docs.rs/hdk/0.0.122/hdk/index.html)
+> Expects an HAPP built with HDK [v0.0.123](https://docs.rs/hdk/0.0.123/hdk/index.html)
 
 manage holochain processes during an electron application runtime, using [holochain-runner binaries](https://github.com/Sprillow/holochain-runner).
 

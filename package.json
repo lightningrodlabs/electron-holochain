@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Sprillow/electron-holochain.git"
+    "url": "git+https://github.com/ddd-mtl/electron-holochain.git"
   },
   "keywords": [
     "holochain",

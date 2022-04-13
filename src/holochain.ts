@@ -117,18 +117,22 @@ export async function runHolochain(
     options.keystorePath,
   ])
   lairHandle.stdout.on('error', (error) => {
+    if (lairHandle.killed) return;
     console.error('lair-keystore stdout err > ' + error)
     statusEmitter.emitError(error)
   })
   lairHandle.stderr.on('data', (error) => {
+    if (lairHandle.killed) return;
     console.error('lair-keystore stderr err' + error.toString())
     statusEmitter.emitError(error)
   })
   lairHandle.on('error', (error) => {
+    if (lairHandle.killed) return;
     console.error('lair-keystore err > ' + error.toString())
     statusEmitter.emitError(error)
   })
   lairHandle.on('close', (code) => {
+    if (lairHandle.killed) return;
     console.log('lair-keystore closed with code: ', code)
     statusEmitter.emitLairKeystoreQuit()
   })
@@ -153,18 +157,22 @@ export async function runHolochain(
     }
   })
   holochainRunnerHandle.stdout.on('error', (error) => {
+    if (holochainRunnerHandle.killed) return;
     console.error('holochain stdout err > ' + error)
     statusEmitter.emitError(error)
   })
   holochainRunnerHandle.stderr.on('data', (error) => {
+    if (holochainRunnerHandle.killed) return;
     console.error('holochain stderr err > ' + error.toString())
     statusEmitter.emitError(new Error(error.toString()))
   })
   holochainRunnerHandle.on('error', (error) => {
+    if (holochainRunnerHandle.killed) return;
     console.error('holochain err > ' + error.toString())
     statusEmitter.emitError(error)
   })
   holochainRunnerHandle.on('close', (code) => {
+    if (holochainRunnerHandle.killed) return;
     console.log('holochain-runner closed with code: ', code)
     statusEmitter.emitHolochainRunnerQuit()
   })

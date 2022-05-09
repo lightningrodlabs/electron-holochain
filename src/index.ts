@@ -96,6 +96,7 @@ async function killHolochain(
         console.error(err)
       }
     })
+    holochainRunnerHandle.kill()
   }
   // Kill lair-keystore and its children
   let canWaitForKeystore = false
@@ -110,6 +111,7 @@ async function killHolochain(
         console.error(err)
       }
     })
+    lairHandle.kill()
   }
   // Wait for the kill commands to complete and exit anyway after a timeout
   console.debug('waiting...')

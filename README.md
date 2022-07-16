@@ -25,7 +25,7 @@ import initAgent, {
   PathOptions
 } from 'electron-holochain'
 
-const runnerOptions: HolochainRunnerOptions = {
+const runnerOptions: ElectronHolochainOptions = {
   happPath: 'pathtomyhapp.happ',
   keystorePath: string
   passphrase: string

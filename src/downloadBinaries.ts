@@ -1,4 +1,4 @@
-import request from 'request'
+import * as request from 'request'
 import * as fs from 'fs'
 import { chmod } from 'fs/promises'
 import * as path from 'path'

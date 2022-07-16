@@ -3,13 +3,14 @@ import {app} from 'electron'
 import initAgent, {
   StateSignal,
   STATUS_EVENT,
-  HolochainRunnerOptions,
 } from '../src'
+import { ElectronHolochainOptions } from '../src/options'
 
-const runnerOptions: HolochainRunnerOptions = {
-  happPath: path.join(__dirname, '../../test/hrea_suite.happ'),
+const runnerOptions: ElectronHolochainOptions = {
+  happPath: path.join(__dirname, '../../test/test.happ'),
   datastorePath: path.join(__dirname, '../../test/data/databases'),
-  keystorePath: path.join(__dirname, '../../test/data/keystore')
+  keystorePath: path.join(__dirname, '../../test/data/keystore'),
+  passphrase: '1234abcd'
   // appId?: string
   // appWsPort?: number
   // adminWsPort?: number

@@ -1,4 +1,4 @@
-import * as request from 'request'
+import request from 'request'
 import * as fs from 'fs'
 import { chmod } from 'fs/promises'
 import * as path from 'path'
@@ -7,7 +7,7 @@ import {
   binariesDirectory,
   defaultHolochainRunnerBinaryPath,
   defaultLairKeystoreBinaryPath,
-} from './binaries'
+} from './binaries.js'
 
 async function download(url: string, dest: string) {
   /* Create an empty file where we can save data */
@@ -65,7 +65,7 @@ async function downloadBinaries(tag: string) {
   try {
     // current holochain-runner release version
     // version-bump
-    const holochainRunnerTag = 'v0.0.38'
+    const holochainRunnerTag = 'v0.0.39'
     await downloadBinaries(holochainRunnerTag)
   } catch (e) {
     console.log(e)

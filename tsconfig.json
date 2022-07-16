@@ -1,8 +1,9 @@
 {
   "include": ["src/**/*", "test/**/*.ts"],
   "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
+    "target": "ESNext",
+    "module": "CommonJS",
+    "moduleResolution": "node",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,

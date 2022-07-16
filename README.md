@@ -1,17 +1,17 @@
 # electron-holochain
 
-> Holochain Revision: [v0.0.141  May 24, 2022](https://github.com/holochain/holochain/releases/tag/holochain-0.0.141)
+> Holochain Revision: [v0.0.149  July 10, 2022](https://github.com/holochain/holochain/releases/tag/holochain-0.0.149)
 > 
-> Lair Keystore Revision: [v0.0.10 Apr 25, 2022](https://github.com/holochain/lair/releases/tag/v0.0.10)
+> Lair Keystore Revision: [v0.2.0 June 20, 2022](https://github.com/holochain/lair/releases/tag/lair_keystore-v0.2.0)
 >
-> Expects an HAPP built with HDK [v0.0.134](https://docs.rs/hdk/0.0.134/hdk/index.html)
+> Expects an HAPP built with HDK [v0.0.142](https://docs.rs/hdk/0.0.142/hdk/index.html) and HDI [v0.0.14](https://docs.rs/hdi/0.0.14/hdi/index.html)
 
 manage holochain processes during an electron application runtime, using [holochain-runner binaries](https://github.com/Sprillow/holochain-runner).
 
 ```typescript
 // function initAgent(
 //   app: App,
-//   opts: HolochainRunnerOptions,
+//   opts: ElectronHolochainOptions,
 //   pathOptions?: PathOptions
 // ): Promise<{ statusEmitter: StatusUpdates, shutdown: () => Promise<void> }>
 
@@ -21,17 +21,18 @@ import initAgent, {
   StatusUpdates,
   STATUS_EVENT,
   APP_PORT_EVENT,
-  HolochainRunnerOptions,
+  ElectronHolochainOptions,
   PathOptions
 } from 'electron-holochain'
 
 const runnerOptions: HolochainRunnerOptions = {
   happPath: 'pathtomyhapp.happ',
+  keystorePath: string
+  passphrase: string
   // datastorePath?: 'string' default: databases
   // appId?: string
   // appWsPort?: number
   // adminWsPort?: number
-  // keystorePath?: string default: keystore
   // proxyUrl?: string
   // membraneProof?: string
   // bootstrapUrl?: string

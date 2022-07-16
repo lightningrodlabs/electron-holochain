@@ -1,17 +1,20 @@
 import * as childProcess from 'child_process'
+import * as path from 'path'
+import * as fs from 'fs'
 import { EventEmitter } from 'events'
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
 import * as split from 'split'
 import {
   constructOptions,
-  HolochainRunnerOptions,
+  ElectronHolochainOptions,
   PathOptions,
-} from './options'
+} from './options.js'
 import {
   defaultHolochainRunnerBinaryPath,
   defaultLairKeystoreBinaryPath,
-} from './binaries'
+} from './binaries.js'
+
 
 type STATUS_EVENT = 'status'
 const STATUS_EVENT = 'status'
@@ -97,9 +100,16 @@ function stdoutToStateSignal(string: string): StateSignal {
   }
 }
 
+function checkLairInitialized(pathToLairConfig: string): boolean {
+  // this file should be sitting on the file system
+  // if the `lair-keystore init` command has been previously run in that directory
+  const configFile = path.join(pathToLairConfig, 'lair-keystore-config.yaml')
+  return fs.existsSync(configFile)
+}
+
 export async function runHolochain(
   statusEmitter: StatusUpdates,
-  options: HolochainRunnerOptions,
+  options: ElectronHolochainOptions,
   pathOptions?: PathOptions
 ): Promise<{
   lairHandle: childProcess.ChildProcessWithoutNullStreams
@@ -112,10 +122,48 @@ export async function runHolochain(
     ? pathOptions.holochainRunnerBinaryPath
     : defaultHolochainRunnerBinaryPath
 
+  if (!checkLairInitialized(options.keystorePath)) {
+    fs.mkdirSync(options.keystorePath, {
+      recursive: true
+    })
+    // similar occurs in Holochain Launcher
+    // https://github.com/holochain/launcher/blob/743420b717249e7c8807e04522a21288127d8d1e/crates/lair_keystore_manager/src/versions/init.rs#L13-L21
+    // first we have to initialize lair-keystore
+    // IF not already initialized
+    // p for "piped", relates to piping in the passphrase
+    const lairInitHandle = childProcess.spawn(lairKeystoreBinaryPath, ['init', '-p'], {
+      cwd: options.keystorePath,
+    })
+    lairInitHandle.on('error', (e) => {
+      console.error('there was an error during lair-keystore init -p', e)
+    })
+    await new Promise<void>((resolve, reject) => {
+      lairInitHandle.stdout.on('data', (chunk) => {
+        if (chunk.toString().includes('lair-keystore init connection_url')) {
+          resolve()
+        }
+      })
+      lairInitHandle.stderr.on('data', (chunk) => {
+        console.error('error during lair-keystore init', chunk.toString())
+        reject(new Error(chunk.toString()))
+      })
+      console.log('writing passphrase to `lair-keystore init -p`')
+      lairInitHandle.stdin.write(options.passphrase)
+      lairInitHandle.stdin.end()
+    })
+  }
+
+  // p for "piped", relates to piping in the passphrase
   const lairHandle = childProcess.spawn(lairKeystoreBinaryPath, [
-    '--lair-dir',
-    options.keystorePath,
-  ])
+    'server',
+    '-p',
+  ], {
+    cwd: options.keystorePath
+  })
+  // write the passphrase in
+  lairHandle.stdin.write(options.passphrase)
+  lairHandle.stdin.end()
+
   lairHandle.stdout.on('error', (error) => {
     if (lairHandle.killed) return;
     console.error('lair-keystore stdout err > ' + error)
@@ -136,12 +184,26 @@ export async function runHolochain(
     console.log('lair-keystore closed with code: ', code)
     statusEmitter.emitLairKeystoreQuit()
   })
-
-  const optionsArray = constructOptions(options)
+  
+  // translate from ElectronHolochainOptions to HolochainRunnerOptions
+  const { keystorePath, ...restOfOptions } = options
+  // get the keystoreUrl for passing to holochain-runner
+  const keystoreUrl = childProcess.spawnSync(lairKeystoreBinaryPath, ['url'], {
+    cwd: options.keystorePath
+  }).stdout.toString()
+  const holochainRunnerOptions = {
+    ...restOfOptions,
+    keystoreUrl
+  }
+  const optionsArray = constructOptions(holochainRunnerOptions)
   const holochainRunnerHandle = childProcess.spawn(
     holochainRunnerBinaryPath,
     optionsArray
   )
+  // write the passphrase through stdin
+  holochainRunnerHandle.stdin.write(options.passphrase)
+  holochainRunnerHandle.stdin.end()
+
   // split divides up the stream line by line
   holochainRunnerHandle.stdout.pipe(split()).on('data', (line: string) => {
     console.debug('holochain > ' + line)

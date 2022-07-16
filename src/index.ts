@@ -1,5 +1,5 @@
 import { App } from 'electron'
-import { HolochainRunnerOptions, PathOptions } from './options'
+import { ElectronHolochainOptions, HolochainRunnerOptions, PathOptions } from './options'
 import {
   runHolochain,
   StateSignal,
@@ -21,7 +21,7 @@ import * as kill from 'tree-kill'
 export {
   StateSignal,
   StatusUpdates,
-  HolochainRunnerOptions,
+  ElectronHolochainOptions,
   STATUS_EVENT,
   PathOptions,
   APP_PORT_EVENT,
@@ -35,7 +35,7 @@ export {
 // and emit events for status updates on their installation progress
 export default async function initAgent(
   app: App,
-  opts: HolochainRunnerOptions,
+  opts: ElectronHolochainOptions,
   binaryPaths?: PathOptions
 ): Promise<{ statusEmitter: StatusUpdates; shutdown: () => Promise<void> }> {
   // wait for the app to be ready

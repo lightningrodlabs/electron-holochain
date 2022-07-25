@@ -1,5 +1,5 @@
 {
-  "name": "@connor-sprillow/electron-holochain",
+  "name": "@sprillow-connor/electron-holochain",
   "version": "0.0.40",
   "description": "manage holochain processes during an electron application runtime",
   "main": "dist/src/index.js",

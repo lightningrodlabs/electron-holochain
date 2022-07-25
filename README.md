@@ -1,6 +1,6 @@
 # electron-holochain
 
-> Holochain Revision: [v0.0.149  July 10, 2022](https://github.com/holochain/holochain/releases/tag/holochain-0.0.149)
+> Holochain Revision: [v0.0.150  July 13, 2022](https://github.com/holochain/holochain/blob/main/CHANGELOG.md#20220713013021)
 > 
 > Lair Keystore Revision: [v0.2.0 June 20, 2022](https://github.com/holochain/lair/releases/tag/lair_keystore-v0.2.0)
 >

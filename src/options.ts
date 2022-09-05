@@ -30,8 +30,8 @@ export function constructOptions(options: HolochainRunnerOptions): string[] {
   if (options.bootstrapUrl) {
     optionsArr = optionsArr.concat(['--bootstrap-url', options.bootstrapUrl])
   }
-  if (options.uid) {
-    optionsArr = optionsArr.concat(['--uid', options.uid])
+  if (options.networkSeed) {
+    optionsArr = optionsArr.concat(['--network-seed', options.networkSeed])
   }
   // happPath is required, and needs to be passed at the end
   optionsArr = optionsArr.concat([options.happPath])
@@ -51,7 +51,7 @@ export interface ExternalInternalOptions {
   proxyUrl?: string
   // membraneProof?: string // base64
   bootstrapUrl?: string
-  uid?: string
+  networkSeed?: string
 }
 
 // we will bury this one internally

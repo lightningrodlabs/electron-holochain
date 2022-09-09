@@ -1,5 +1,5 @@
 {
-  "name": "electron-holochain",
+  "name": "@lightningrodlabs/electron-holochain",
   "version": "0.0.41",
   "description": "manage holochain processes during an electron application runtime",
   "main": "dist/src/index.js",

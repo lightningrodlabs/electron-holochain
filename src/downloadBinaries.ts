@@ -46,9 +46,9 @@ async function downloadBinaries(tag: string) {
     darwin: 'lair-keystore-x86_64-apple-darwin',
     linux: 'lair-keystore-x86_64-unknown-linux-gnu'
   }
-  const lairKeystoreUrl = `https://github.com/Sprillow/holochain-runner/releases/download/${tag}/${lairKeystoreFilenames[process.platform]}`
+  const lairKeystoreUrl = `https://github.com/lightningrodlabs/holochain-runner/releases/download/${tag}/${lairKeystoreFilenames[process.platform]}`
   await download(lairKeystoreUrl, defaultLairKeystoreBinaryPath)
-  const holochainRunnerCompressedUrl = `https://github.com/Sprillow/holochain-runner/releases/download/${tag}/${holochainRunnerFilenames[process.platform]}`
+  const holochainRunnerCompressedUrl = `https://github.com/lightningrodlabs/holochain-runner/releases/download/${tag}/${holochainRunnerFilenames[process.platform]}`
   const compressedTempFilename = path.join(
     binariesDirectory,
     holochainRunnerFilenames[process.platform]

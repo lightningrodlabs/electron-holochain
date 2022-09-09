@@ -160,15 +160,16 @@ export async function runHolochain(
   ], {
     cwd: options.keystorePath
   })
+  // write the passphrase in
+  lairHandle.stdin.write(options.passphrase)
+  lairHandle.stdin.end()
+
   await new Promise<void>((resolve, reject) => {
     lairHandle.stdout.on('data', (chunk) => {
       if (chunk.toString().includes('lair-keystore running')) {
         resolve()
       }
     })
-    // write the passphrase in
-    lairHandle.stdin.write(options.passphrase)
-    lairHandle.stdin.end()
   
     lairHandle.stdout.on('error', (error) => {
       if (lairHandle.killed) return;

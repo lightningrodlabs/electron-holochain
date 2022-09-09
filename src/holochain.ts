@@ -160,29 +160,37 @@ export async function runHolochain(
   ], {
     cwd: options.keystorePath
   })
-  // write the passphrase in
-  lairHandle.stdin.write(options.passphrase)
-  lairHandle.stdin.end()
-
-  lairHandle.stdout.on('error', (error) => {
-    if (lairHandle.killed) return;
-    console.error('lair-keystore stdout err > ' + error)
-    statusEmitter.emitError(error)
-  })
-  lairHandle.stderr.on('data', (error) => {
-    if (lairHandle.killed) return;
-    console.error('lair-keystore stderr err' + error.toString())
-    statusEmitter.emitError(error)
-  })
-  lairHandle.on('error', (error) => {
-    if (lairHandle.killed) return;
-    console.error('lair-keystore err > ' + error.toString())
-    statusEmitter.emitError(error)
-  })
-  lairHandle.on('close', (code) => {
-    if (lairHandle.killed) return;
-    console.log('lair-keystore closed with code: ', code)
-    statusEmitter.emitLairKeystoreQuit()
+  await new Promise<void>((resolve, reject) => {
+    lairHandle.stdout.on('data', (chunk) => {
+      if (chunk.toString().includes('lair-keystore running')) {
+        resolve()
+      }
+    })
+    // write the passphrase in
+    lairHandle.stdin.write(options.passphrase)
+    lairHandle.stdin.end()
+  
+    lairHandle.stdout.on('error', (error) => {
+      if (lairHandle.killed) return;
+      console.error('lair-keystore stdout err > ' + error)
+      statusEmitter.emitError(error)
+    })
+    lairHandle.stderr.on('data', (error) => {
+      if (lairHandle.killed) return;
+      console.error('lair-keystore stderr err' + error.toString())
+      statusEmitter.emitError(error)
+      reject(new Error(error.toString()))
+    })
+    lairHandle.on('error', (error) => {
+      if (lairHandle.killed) return;
+      console.error('lair-keystore err > ' + error.toString())
+      statusEmitter.emitError(error)
+    })
+    lairHandle.on('close', (code) => {
+      if (lairHandle.killed) return;
+      console.log('lair-keystore closed with code: ', code)
+      statusEmitter.emitLairKeystoreQuit()
+    })
   })
   
   // translate from ElectronHolochainOptions to HolochainRunnerOptions

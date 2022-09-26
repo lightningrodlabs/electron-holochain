@@ -2,7 +2,6 @@ import * as path from 'path'
 
 const windowsExtension = process.platform === 'win32' ? '.exe' : ''
 const holochainRunnerBinName = `holochain-runner${windowsExtension}`
-const lairKeystoreBinName = `lair-keystore${windowsExtension}`
 
 const binariesDirectory = path.join(
   __dirname,
@@ -15,15 +14,8 @@ const defaultHolochainRunnerBinaryPath = path.join(
   holochainRunnerBinName
 )
 
-const defaultLairKeystoreBinaryPath = path.join(
-  binariesDirectory,
-  lairKeystoreBinName
-)
-
 export {
   holochainRunnerBinName,
-  lairKeystoreBinName,
   binariesDirectory,
   defaultHolochainRunnerBinaryPath,
-  defaultLairKeystoreBinaryPath,
 }

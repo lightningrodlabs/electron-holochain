@@ -12,7 +12,6 @@ import {
 } from './options.js'
 import {
   defaultHolochainRunnerBinaryPath,
-  defaultLairKeystoreBinaryPath,
 } from './binaries.js'
 
 
@@ -24,13 +23,10 @@ type ERROR_EVENT = 'error'
 const ERROR_EVENT = 'error'
 type HOLOCHAIN_RUNNER_QUIT = 'holochain_runner_quit'
 const HOLOCHAIN_RUNNER_QUIT = 'holochain_runner_quit'
-type LAIR_KEYSTORE_QUIT = 'lair_keystore_quit'
-const LAIR_KEYSTORE_QUIT = 'lair_keystore_quit'
 export {
   STATUS_EVENT,
   APP_PORT_EVENT,
   ERROR_EVENT,
-  LAIR_KEYSTORE_QUIT,
   HOLOCHAIN_RUNNER_QUIT,
 }
 
@@ -40,7 +36,6 @@ export declare interface StatusUpdates {
       | STATUS_EVENT
       | APP_PORT_EVENT
       | ERROR_EVENT
-      | LAIR_KEYSTORE_QUIT
       | HOLOCHAIN_RUNNER_QUIT,
     listener: (status: StateSignal | string | Error) => void
   ): this
@@ -58,9 +53,6 @@ export class StatusUpdates extends EventEmitter {
   }
   emitHolochainRunnerQuit(): void {
     this.emit(HOLOCHAIN_RUNNER_QUIT)
-  }
-  emitLairKeystoreQuit(): void {
-    this.emit(LAIR_KEYSTORE_QUIT)
   }
 }
 
@@ -112,99 +104,21 @@ export async function runHolochain(
   options: ElectronHolochainOptions,
   pathOptions?: PathOptions
 ): Promise<{
-  lairHandle: childProcess.ChildProcessWithoutNullStreams
   holochainRunnerHandle: childProcess.ChildProcessWithoutNullStreams
 }> {
-  const lairKeystoreBinaryPath = pathOptions
-    ? pathOptions.lairKeystoreBinaryPath
-    : defaultLairKeystoreBinaryPath
   const holochainRunnerBinaryPath = pathOptions
     ? pathOptions.holochainRunnerBinaryPath
     : defaultHolochainRunnerBinaryPath
 
-  if (!checkLairInitialized(options.keystorePath)) {
+  if (options.keystorePath && !checkLairInitialized(options.keystorePath)) {
     fs.mkdirSync(options.keystorePath, {
       recursive: true
     })
-    // similar occurs in Holochain Launcher
-    // https://github.com/holochain/launcher/blob/743420b717249e7c8807e04522a21288127d8d1e/crates/lair_keystore_manager/src/versions/init.rs#L13-L21
-    // first we have to initialize lair-keystore
-    // IF not already initialized
-    // p for "piped", relates to piping in the passphrase
-    const lairInitHandle = childProcess.spawn(lairKeystoreBinaryPath, ['init', '-p'], {
-      cwd: options.keystorePath,
-    })
-    lairInitHandle.on('error', (e) => {
-      console.error('there was an error during lair-keystore init -p', e)
-    })
-    await new Promise<void>((resolve, reject) => {
-      lairInitHandle.stdout.on('data', (chunk) => {
-        if (chunk.toString().includes('lair-keystore init connection_url')) {
-          resolve()
-        }
-      })
-      lairInitHandle.stderr.on('data', (chunk) => {
-        console.error('error during lair-keystore init', chunk.toString())
-        reject(new Error(chunk.toString()))
-      })
-      console.log('writing passphrase to `lair-keystore init -p`')
-      lairInitHandle.stdin.write(options.passphrase)
-      lairInitHandle.stdin.end()
-    })
   }
 
-  // p for "piped", relates to piping in the passphrase
-  const lairHandle = childProcess.spawn(lairKeystoreBinaryPath, [
-    'server',
-    '-p',
-  ], {
-    cwd: options.keystorePath
-  })
-  // write the passphrase in
-  lairHandle.stdin.write(options.passphrase)
-  lairHandle.stdin.end()
-
-  await new Promise<void>((resolve, reject) => {
-    lairHandle.stdout.on('data', (chunk) => {
-      if (chunk.toString().includes('lair-keystore running')) {
-        resolve()
-      }
-    })
-  
-    lairHandle.stdout.on('error', (error) => {
-      if (lairHandle.killed) return;
-      console.error('lair-keystore stdout err > ' + error)
-      statusEmitter.emitError(error)
-    })
-    lairHandle.stderr.on('data', (error) => {
-      if (lairHandle.killed) return;
-      console.error('lair-keystore stderr err' + error.toString())
-      statusEmitter.emitError(error)
-      reject(new Error(error.toString()))
-    })
-    lairHandle.on('error', (error) => {
-      if (lairHandle.killed) return;
-      console.error('lair-keystore err > ' + error.toString())
-      statusEmitter.emitError(error)
-    })
-    lairHandle.on('close', (code) => {
-      if (lairHandle.killed) return;
-      console.log('lair-keystore closed with code: ', code)
-      statusEmitter.emitLairKeystoreQuit()
-    })
-  })
-  
-  // translate from ElectronHolochainOptions to HolochainRunnerOptions
-  const { keystorePath, ...restOfOptions } = options
-  // get the keystoreUrl for passing to holochain-runner
-  const keystoreUrl = childProcess.spawnSync(lairKeystoreBinaryPath, ['url'], {
-    cwd: options.keystorePath
-  }).stdout.toString()
-  const holochainRunnerOptions = {
-    ...restOfOptions,
-    keystoreUrl
-  }
-  const optionsArray = constructOptions(holochainRunnerOptions)
+  const optionsArray = constructOptions(options)
+  // spawn holochain-runner and pass it a version
+  // of the given options that it can digest
   const holochainRunnerHandle = childProcess.spawn(
     holochainRunnerBinaryPath,
     optionsArray
@@ -249,7 +163,6 @@ export async function runHolochain(
   })
 
   return {
-    lairHandle,
     holochainRunnerHandle,
   }
 }

@@ -6,7 +6,6 @@ import * as tar from 'tar'
 import {
   binariesDirectory,
   defaultHolochainRunnerBinaryPath,
-  defaultLairKeystoreBinaryPath,
 } from './binaries.js'
 
 async function download(url: string, dest: string) {
@@ -41,13 +40,6 @@ async function downloadBinaries(tag: string) {
     darwin: 'holochain-runner-x86_64-apple-darwin.tar.gz',
     linux: 'holochain-runner-x86_64-unknown-linux-gnu.tar.gz'
   }
-  const lairKeystoreFilenames = {
-    win32: 'lair-keystore-x86_64-pc-windows-msvc.exe',
-    darwin: 'lair-keystore-x86_64-apple-darwin',
-    linux: 'lair-keystore-x86_64-unknown-linux-gnu'
-  }
-  const lairKeystoreUrl = `https://github.com/lightningrodlabs/holochain-runner/releases/download/${tag}/${lairKeystoreFilenames[process.platform]}`
-  await download(lairKeystoreUrl, defaultLairKeystoreBinaryPath)
   const holochainRunnerCompressedUrl = `https://github.com/lightningrodlabs/holochain-runner/releases/download/${tag}/${holochainRunnerFilenames[process.platform]}`
   const compressedTempFilename = path.join(
     binariesDirectory,
@@ -57,7 +49,6 @@ async function downloadBinaries(tag: string) {
   await tar.x({ file: compressedTempFilename, cwd: binariesDirectory })
   fs.rmSync(compressedTempFilename)
   // defaultHolochainRunnerBinaryPath
-  await chmod(defaultLairKeystoreBinaryPath, 511)
   await chmod(defaultHolochainRunnerBinaryPath, 511)
 }
 
@@ -65,7 +56,7 @@ async function downloadBinaries(tag: string) {
   try {
     // current holochain-runner release version
     // version-bump
-    const holochainRunnerTag = 'v0.1.0'
+    const holochainRunnerTag = 'v0.2.0'
     await downloadBinaries(holochainRunnerTag)
   } catch (e) {
     console.log(e)

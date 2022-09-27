@@ -1,7 +1,7 @@
 {
   "name": "@lightningrodlabs/electron-holochain",
-  "version": "0.1.0",
-  "description": "manage holochain processes during an electron application runtime",
+  "version": "0.2.0",
+  "description": "manage holochain as a sub-process within an electron application runtime",
   "main": "dist/src/index.js",
   "scripts": {
     "build": "tsc",

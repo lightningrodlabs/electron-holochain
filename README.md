@@ -1,12 +1,10 @@
 # electron-holochain
 
-> Holochain Revision: [v0.0.156  August 23, 2022](https://github.com/holochain/holochain/blob/main/CHANGELOG.md#20220823103320)
-> 
-> Lair Keystore Revision: [v0.2.0 June 20, 2022](https://github.com/holochain/lair/releases/tag/lair_keystore-v0.2.0)
+> Holochain Revision: [v0.0.162  September 14, 2022](https://github.com/holochain/holochain/blob/main/CHANGELOG.md#20220914013149)
 >
-> Expects an HAPP built with HDK [v0.0.147](https://docs.rs/hdk/0.0.147/hdk/index.html) and HDI [v0.0.19](https://docs.rs/hdi/0.0.19/hdi/index.html)
+> Expects an HAPP built with HDK [v0.0.152](https://docs.rs/hdk/0.0.152/hdk/index.html) and HDI [v0.1.2](https://docs.rs/hdi/0.1.2/hdi/index.html)
 
-manage holochain processes during an electron application runtime, using [holochain-runner binaries](https://github.com/lightningrodlabs/holochain-runner).
+manage holochain processes during an electron application runtime, using [holochain-runner binary](https://github.com/lightningrodlabs/holochain-runner).
 
 ```typescript
 // function initAgent(

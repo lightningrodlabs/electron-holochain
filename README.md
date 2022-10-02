@@ -1,8 +1,8 @@
 # electron-holochain
 
-> Holochain Revision: [v0.0.162  September 14, 2022](https://github.com/holochain/holochain/blob/main/CHANGELOG.md#20220914013149)
+> Holochain Revision: [v0.0.165  September 30, 2022](https://github.com/holochain/holochain/blob/main/CHANGELOG.md#20220930014733)
 >
-> Expects an HAPP built with HDK [v0.0.152](https://docs.rs/hdk/0.0.152/hdk/index.html) and HDI [v0.1.2](https://docs.rs/hdi/0.1.2/hdi/index.html)
+> Expects an HAPP built with HDK [v0.0.154](https://docs.rs/hdk/0.0.154/hdk/index.html) and HDI [v0.1.3](https://docs.rs/hdi/0.1.3/hdi/index.html)
 
 manage holochain processes during an electron application runtime, using [holochain-runner binary](https://github.com/lightningrodlabs/holochain-runner).
 

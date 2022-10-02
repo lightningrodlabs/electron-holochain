@@ -110,6 +110,8 @@ export async function runHolochain(
     ? pathOptions.holochainRunnerBinaryPath
     : defaultHolochainRunnerBinaryPath
 
+  // create the keystore folder if it doesn't
+  // exist
   if (options.keystorePath && !checkLairInitialized(options.keystorePath)) {
     fs.mkdirSync(options.keystorePath, {
       recursive: true

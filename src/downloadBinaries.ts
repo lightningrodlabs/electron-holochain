@@ -35,15 +35,26 @@ async function download(url: string, dest: string) {
 async function downloadBinaries(tag: string) {
   fs.rmSync(binariesDirectory, { recursive: true, force: true })
   fs.mkdirSync(binariesDirectory)
+
+  let platformArch: string = process.platform
+  // darwin means MacOS
+  if (platformArch === 'darwin') {
+    if (process.arch === 'arm64') {
+      platformArch = 'darwinArm64'
+    } else if (process.arch === 'x64') {
+      platformArch = 'darwinX64'
+    }
+  }
   const holochainRunnerFilenames = {
     win32: 'holochain-runner-x86_64-pc-windows-msvc.tar.gz',
-    darwin: 'holochain-runner-x86_64-apple-darwin.tar.gz',
-    linux: 'holochain-runner-x86_64-unknown-linux-gnu.tar.gz'
+    darwinX64: 'holochain-runner-x86_64-apple-darwin.tar.gz',
+    darwinArm64: 'holochain-runner-arm64-apple-darwin.tar.gz',
+    linux: 'holochain-runner-x86_64-unknown-linux-gnu.tar.gz',
   }
-  const holochainRunnerCompressedUrl = `https://github.com/lightningrodlabs/holochain-runner/releases/download/${tag}/${holochainRunnerFilenames[process.platform]}`
+  const holochainRunnerCompressedUrl = `https://github.com/lightningrodlabs/holochain-runner/releases/download/${tag}/${holochainRunnerFilenames[platformArch]}`
   const compressedTempFilename = path.join(
     binariesDirectory,
-    holochainRunnerFilenames[process.platform]
+    holochainRunnerFilenames[platformArch]
   )
   await download(holochainRunnerCompressedUrl, compressedTempFilename)
   await tar.x({ file: compressedTempFilename, cwd: binariesDirectory })
@@ -56,7 +67,7 @@ async function downloadBinaries(tag: string) {
   try {
     // current holochain-runner release version
     // version-bump
-    const holochainRunnerTag = 'v0.3.0'
+    const holochainRunnerTag = 'v0.4.0'
     await downloadBinaries(holochainRunnerTag)
   } catch (e) {
     console.log(e)

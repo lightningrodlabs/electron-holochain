@@ -10,7 +10,8 @@ const runnerOptions: ElectronHolochainOptions = {
   happPath: path.join(__dirname, '../../test/test.happ'),
   datastorePath: path.join(__dirname, '../../test/data/databases'),
   keystorePath: path.join(__dirname, '../../test/data/keystore'),
-  passphrase: '1234abcd'
+  passphrase: '1234abcd',
+  networkSeed: 'asdfiu12jekljasdf'
   // appId?: string
   // appWsPort?: number
   // adminWsPort?: number

@@ -1,10 +1,10 @@
 # electron-holochain
 
-**Built-in Holochain Version: [v0.1.0-beta-rc.2  December 23, 2022](https://github.com/holochain/holochain/blob/main/CHANGELOG.md#20221223034701)**
+**Built-in Holochain Version: [v0.1.0](https://github.com/holochain/holochain/blob/main/CHANGELOG.md#20230126223635)**
 
-**Important: Expects an HAPP built with HDK [v0.1.0-beta-rc.1](https://docs.rs/hdk/0.1.0-beta-rc.1/hdk/index.html) and HDI [v0.2.0-beta-rc.1](https://docs.rs/hdi/0.2.0-beta-rc.1/hdi/index.html)**
+**Important: Expects an HAPP built with HDK [v0.1.0](https://docs.rs/hdk/0.1.0/hdk/index.html) and HDI [v0.2.0](https://docs.rs/hdi/0.2.0/hdi/index.html)**
 
-An alternative Holochain conductor binary useful for quick startup and including handling of key generation and hApp installation.
+An alternative Holochain conductor binary useful for quick startup and including handling of key generation and hApp installation. Useful for production and development environments.
 
 manage holochain processes during an electron application runtime, using [holochain-runner binary](https://github.com/lightningrodlabs/holochain-runner).
 

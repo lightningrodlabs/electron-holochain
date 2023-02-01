@@ -67,7 +67,7 @@ async function downloadBinaries(tag: string) {
   try {
     // current holochain-runner release version
     // version-bump
-    const holochainRunnerTag = 'v0.6.0'
+    const holochainRunnerTag = 'v0.6.1'
     await downloadBinaries(holochainRunnerTag)
   } catch (e) {
     console.log(e)

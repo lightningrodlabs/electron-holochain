@@ -15,7 +15,7 @@ const runnerOptions: ElectronHolochainOptions = {
   // appId?: string
   // appWsPort?: number
   // adminWsPort?: number
-  // proxyUrl?: string
+  // webrtcSignalUrl?: string
 }
 
 app.on('ready', async () => {

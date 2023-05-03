@@ -23,8 +23,8 @@ export function constructOptions(options: HolochainRunnerOptions): string[] {
       options.adminWsPort.toString(),
     ])
   }
-  if (options.proxyUrl) {
-    optionsArr = optionsArr.concat(['--proxy-url', options.proxyUrl])
+  if (options.webrtcSignalUrl) {
+    optionsArr = optionsArr.concat(['--proxy-url', options.webrtcSignalUrl])
   }
   // if (options.membraneProof) {
   //   optionsArr = optionsArr.concat(['--membrane-proof', options.membraneProof])
@@ -51,7 +51,7 @@ export interface HolochainRunnerOptions {
   appId?: string
   appWsPort?: number
   adminWsPort?: number
-  proxyUrl?: string
+  webrtcSignalUrl?: string
   // membraneProof?: string // base64
   bootstrapUrl?: string
   networkSeed?: string

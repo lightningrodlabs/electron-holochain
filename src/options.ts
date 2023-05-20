@@ -24,7 +24,7 @@ export function constructOptions(options: HolochainRunnerOptions): string[] {
     ])
   }
   if (options.webrtcSignalUrl) {
-    optionsArr = optionsArr.concat(['--proxy-url', options.webrtcSignalUrl])
+    optionsArr = optionsArr.concat(['--webrtc-signal-url', options.webrtcSignalUrl])
   }
   // if (options.membraneProof) {
   //   optionsArr = optionsArr.concat(['--membrane-proof', options.membraneProof])

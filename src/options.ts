@@ -35,6 +35,9 @@ export function constructOptions(options: HolochainRunnerOptions): string[] {
   if (options.networkSeed) {
     optionsArr = optionsArr.concat(['--network-seed', options.networkSeed])
   }
+  if (options.gossipArcClamping) {
+    optionsArr = optionsArr.concat(['--gossip-arc-clamping', options.gossipArcClamping])
+  }
   // happPath is required, and needs to be passed at the end
   optionsArr = optionsArr.concat([options.happPath])
   if (options.datastorePath) {
@@ -56,6 +59,7 @@ export interface HolochainRunnerOptions {
   bootstrapUrl?: string
   networkSeed?: string
   keystorePath?: string
+  gossipArcClamping?: "full" | "empty" | "none"
 }
 
 // exposing this externally instead

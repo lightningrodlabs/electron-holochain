@@ -19,6 +19,8 @@ type STATUS_EVENT = 'status'
 const STATUS_EVENT = 'status'
 type APP_PORT_EVENT = 'port'
 const APP_PORT_EVENT = 'port'
+type LAIR_SOCKET_EVENT = 'lair'
+const LAIR_SOCKET_EVENT = 'lair'
 type ERROR_EVENT = 'error'
 const ERROR_EVENT = 'error'
 type HOLOCHAIN_RUNNER_QUIT = 'holochain_runner_quit'
@@ -26,6 +28,7 @@ const HOLOCHAIN_RUNNER_QUIT = 'holochain_runner_quit'
 export {
   STATUS_EVENT,
   APP_PORT_EVENT,
+  LAIR_SOCKET_EVENT,
   ERROR_EVENT,
   HOLOCHAIN_RUNNER_QUIT,
 }
@@ -35,6 +38,7 @@ export declare interface StatusUpdates {
     event:
       | STATUS_EVENT
       | APP_PORT_EVENT
+      | LAIR_SOCKET_EVENT
       | ERROR_EVENT
       | HOLOCHAIN_RUNNER_QUIT,
     listener: (status: StateSignal | string | Error) => void
@@ -47,6 +51,9 @@ export class StatusUpdates extends EventEmitter {
   }
   emitAppPort(port: string): void {
     this.emit(APP_PORT_EVENT, port)
+  }
+  emitLairSocket(socket: string): void {
+    this.emit(LAIR_SOCKET_EVENT, socket)
   }
   emitError(error: Error): void {
     this.emit(ERROR_EVENT, error)
@@ -142,6 +149,11 @@ export async function runHolochain(
     if (appPort !== null) {
       statusEmitter.emitAppPort(appPort)
     }
+    // Check for lair keystore socket
+    const lairKeystoreSocket = parseForLairKeystoreSocket(line)
+    if (lairKeystoreSocket !== null) {
+      statusEmitter.emitLairSocket(lairKeystoreSocket)
+    }
   })
   holochainRunnerHandle.stdout.on('error', (error) => {
     if (holochainRunnerHandle.killed) return;
@@ -170,9 +182,15 @@ export async function runHolochain(
 }
 
 function parseForAppPort(line: string): string | null {
-  let regex = /APP_WS_PORT: ([0-9]*)/gm
+  return parseForRegexp(line, /APP_WS_PORT: ([0-9]*)/gm);
+}
+
+function parseForLairKeystoreSocket(line: string): string | null {
+  return parseForRegexp(line, /\# lair-keystore connection_url \# (.*) \#/gm);
+}
+
+function parseForRegexp(line: string, regex: RegExp): string | null {
   let match = regex.exec(line)
-  // console.log({match});
   if (match === undefined || match === null || match.length === 0) {
     return null
   }

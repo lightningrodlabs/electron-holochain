@@ -6,6 +6,7 @@ import {
   StatusUpdates,
   STATUS_EVENT,
   APP_PORT_EVENT,
+  LAIR_SOCKET_EVENT,
   ERROR_EVENT,
   HOLOCHAIN_RUNNER_QUIT,  
 } from './holochain'
@@ -23,6 +24,7 @@ export {
   STATUS_EVENT,
   PathOptions,
   APP_PORT_EVENT,
+  LAIR_SOCKET_EVENT,
   ERROR_EVENT,
   HOLOCHAIN_RUNNER_QUIT,  
 }

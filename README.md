@@ -1,8 +1,8 @@
 # electron-holochain
 
-**Built-in Holochain Version: [v0.2.2](https://github.com/holochain/holochain/blob/main-0.2/CHANGELOG.md#20230913190722)**
+**Built-in Holochain Version: [v0.1.6](https://github.com/holochain/holochain/blob/main-0.2/CHANGELOG.md#20230913190722)**
 
-**Important: Expects an HAPP built with HDK [v0.2.2](https://docs.rs/hdk/0.2.2/hdk/index.html) and HDI [v0.3.2](https://docs.rs/hdi/0.3.2/hdi/index.html)**
+**Important: Expects an HAPP built with HDK [v0.1.4](https://docs.rs/hdk/0.1.4/hdk/index.html) and HDI [v0.2.4](https://docs.rs/hdi/0.2.4/hdi/index.html)**
 
 An alternative Holochain conductor binary useful for quick startup and including handling of key generation and hApp installation. Useful for production and development environments.
 
@@ -33,7 +33,7 @@ const runnerOptions: ElectronHolochainOptions = {
   // appId?: string
   // appWsPort?: number
   // adminWsPort?: number
-  // webrtcSignalUrl?: string
+  // proxyUrl?: string
   // membraneProof?: string
   // bootstrapUrl?: string
   // networkSeed?: string

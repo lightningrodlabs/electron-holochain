@@ -23,8 +23,8 @@ export function constructOptions(options: HolochainRunnerOptions): string[] {
       options.adminWsPort.toString(),
     ])
   }
-  if (options.webrtcSignalUrl) {
-    optionsArr = optionsArr.concat(['--webrtc-signal-url', options.webrtcSignalUrl])
+  if (options.proxyUrl) {
+    optionsArr = optionsArr.concat(['--proxy-url', options.proxyUrl])
   }
   // if (options.membraneProof) {
   //   optionsArr = optionsArr.concat(['--membrane-proof', options.membraneProof])
@@ -34,9 +34,6 @@ export function constructOptions(options: HolochainRunnerOptions): string[] {
   }
   if (options.networkSeed) {
     optionsArr = optionsArr.concat(['--network-seed', options.networkSeed])
-  }
-  if (options.gossipArcClamping) {
-    optionsArr = optionsArr.concat(['--gossip-arc-clamping', options.gossipArcClamping])
   }
   // happPath is required, and needs to be passed at the end
   optionsArr = optionsArr.concat([options.happPath])
@@ -54,12 +51,11 @@ export interface HolochainRunnerOptions {
   appId?: string
   appWsPort?: number
   adminWsPort?: number
-  webrtcSignalUrl?: string
+  proxyUrl?: string
   // membraneProof?: string // base64
   bootstrapUrl?: string
   networkSeed?: string
   keystorePath?: string
-  gossipArcClamping?: "full" | "empty" | "none"
 }
 
 // exposing this externally instead

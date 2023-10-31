@@ -43,6 +43,7 @@ export declare interface StatusUpdates {
       | APP_PORT_EVENT
       | LAIR_SOCKET_EVENT
       | ERROR_EVENT
+      | LOG_EVENT
       | HOLOCHAIN_RUNNER_QUIT,
     listener: (status: StateSignal | string | Error) => void
   ): this

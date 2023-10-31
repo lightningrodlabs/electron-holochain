@@ -1,5 +1,5 @@
 import { App } from 'electron'
-import { ElectronHolochainOptions, HolochainRunnerOptions, PathOptions } from './options'
+import { ElectronHolochainOptions, PathOptions } from './options'
 import {
   runHolochain,
   StateSignal,

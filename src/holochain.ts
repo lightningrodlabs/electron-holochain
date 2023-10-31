@@ -23,6 +23,8 @@ type LAIR_SOCKET_EVENT = 'lair'
 const LAIR_SOCKET_EVENT = 'lair'
 type ERROR_EVENT = 'error'
 const ERROR_EVENT = 'error'
+type LOG_EVENT = 'log'
+const LOG_EVENT = 'log'
 type HOLOCHAIN_RUNNER_QUIT = 'holochain_runner_quit'
 const HOLOCHAIN_RUNNER_QUIT = 'holochain_runner_quit'
 export {
@@ -30,6 +32,7 @@ export {
   APP_PORT_EVENT,
   LAIR_SOCKET_EVENT,
   ERROR_EVENT,
+  LOG_EVENT,
   HOLOCHAIN_RUNNER_QUIT,
 }
 
@@ -54,6 +57,9 @@ export class StatusUpdates extends EventEmitter {
   }
   emitLairSocket(socket: string): void {
     this.emit(LAIR_SOCKET_EVENT, socket)
+  }
+  emitLog(line: string): void {
+    this.emit(LOG_EVENT, line)
   }
   emitError(error: Error): void {
     this.emit(ERROR_EVENT, error)
@@ -138,7 +144,6 @@ export async function runHolochain(
 
   // split divides up the stream line by line
   holochainRunnerHandle.stdout.pipe(split()).on('data', (line: string) => {
-    console.debug('holochain > ' + line)
     // Check for state signal
     const checkIfSignal = stdoutToStateSignal(line)
     if (checkIfSignal !== null) {
@@ -155,19 +160,12 @@ export async function runHolochain(
       statusEmitter.emitLairSocket(lairKeystoreSocket)
     }
   })
-  holochainRunnerHandle.stdout.on('error', (error) => {
-    if (holochainRunnerHandle.killed) return;
-    console.error('holochain stdout err > ' + error)
-    statusEmitter.emitError(error)
-  })
   holochainRunnerHandle.stderr.on('data', (error) => {
     if (holochainRunnerHandle.killed) return;
-    console.error('holochain stderr err > ' + error.toString())
     statusEmitter.emitError(new Error(error.toString()))
   })
   holochainRunnerHandle.on('error', (error) => {
     if (holochainRunnerHandle.killed) return;
-    console.error('holochain err > ' + error.toString())
     statusEmitter.emitError(error)
   })
   holochainRunnerHandle.on('close', (code) => {

@@ -1,8 +1,8 @@
 # electron-holochain
 
-**Built-in Holochain Version: [v0.2.2](https://github.com/holochain/holochain/blob/main-0.2/CHANGELOG.md#20230913190722)**
+**Built-in Holochain Version: [v0.2.3-beta-rc.1](https://github.com/holochain/holochain/blob/main-0.2/CHANGELOG.md#20230930114759)**
 
-**Important: Expects an HAPP built with HDK [v0.2.2](https://docs.rs/hdk/0.2.2/hdk/index.html) and HDI [v0.3.2](https://docs.rs/hdi/0.3.2/hdi/index.html)**
+**Important: Expects an HAPP built with HDK [~v0.2.2](https://docs.rs/hdk/0.2.2/hdk/index.html) and HDI [~v0.3.2](https://docs.rs/hdi/0.3.2/hdi/index.html)**
 
 An alternative Holochain conductor binary useful for quick startup and including handling of key generation and hApp installation. Useful for production and development environments.
 
@@ -21,6 +21,8 @@ import initAgent, {
   StatusUpdates,
   STATUS_EVENT,
   APP_PORT_EVENT,
+  ERROR_EVENT,
+  LOG_EVENT,
   ElectronHolochainOptions,
   PathOptions
 } from 'electron-holochain'
@@ -34,7 +36,6 @@ const runnerOptions: ElectronHolochainOptions = {
   // appWsPort?: number
   // adminWsPort?: number
   // webrtcSignalUrl?: string
-  // membraneProof?: string
   // bootstrapUrl?: string
   // networkSeed?: string
 }
@@ -50,8 +51,34 @@ statusEmitter.on(STATUS_EVENT, (status: StateSignal) => {
 statusEmitter.on(APP_PORT_EVENT, (appPort: string) => {
   // do stuff
 }
+
+// listen for normal log messages
+statusEmitter.on(LOG_EVENT, (log: string) => {
+  // do stuff
+})
+
+// listen for errors
+statusEmitter.on(ERROR_EVENT, (error: Error) => {
+  // do stuff
+})
 // when the app quits, holochain-runner and lair-keystore will shut down automatically
 
 // you can also call the following, to shut them down
 await shutdown()
 ```
+
+
+## Updating holochain-runner version and releasing
+
+Go to [./src/downloadBinaries.ts](./src/downloadBinaries.ts) and search for 'version-bump'.
+Change the value of `const holochainRunnerTag = 'v0.7.9'` to the version of holochain-runner you want to bundle.
+This will instructs clients to download that version of the holochain-runner binary from Github, during `npm install`.
+
+To get this to trigger, run `npm run try-binary-download`.
+
+## Publishing
+
+Bump the package.json version. 
+Commit. Tag. Push.
+Run `npm run build` to build the typescript.
+Then run `npm publish --access public` to publish to npmjs.com.

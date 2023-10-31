@@ -13,6 +13,7 @@ import {
 import {
   defaultHolochainRunnerBinaryPath,
 } from './binaries.js'
+import { stat } from 'original-fs'
 
 
 type STATUS_EVENT = 'status'
@@ -160,6 +161,7 @@ export async function runHolochain(
     if (lairKeystoreSocket !== null) {
       statusEmitter.emitLairSocket(lairKeystoreSocket)
     }
+    statusEmitter.emitLog(line)
   })
   holochainRunnerHandle.stderr.on('data', (error) => {
     if (holochainRunnerHandle.killed) return;

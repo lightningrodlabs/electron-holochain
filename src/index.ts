@@ -8,6 +8,8 @@ import {
   APP_PORT_EVENT,
   LAIR_SOCKET_EVENT,
   ERROR_EVENT,
+  HOLOCHAIN_LOG_EVENT,
+  WASM_LOG_EVENT,
   HOLOCHAIN_RUNNER_QUIT,  
 } from './holochain'
 import {
@@ -21,8 +23,10 @@ export {
   StateSignal,
   StatusUpdates,
   ElectronHolochainOptions,
-  STATUS_EVENT,
   PathOptions,
+  STATUS_EVENT,
+  HOLOCHAIN_LOG_EVENT,
+  WASM_LOG_EVENT,
   APP_PORT_EVENT,
   LAIR_SOCKET_EVENT,
   ERROR_EVENT,

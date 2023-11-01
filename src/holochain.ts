@@ -13,7 +13,6 @@ import {
 import {
   defaultHolochainRunnerBinaryPath,
 } from './binaries.js'
-import { stat } from 'original-fs'
 
 
 type STATUS_EVENT = 'status'
@@ -24,8 +23,10 @@ type LAIR_SOCKET_EVENT = 'lair'
 const LAIR_SOCKET_EVENT = 'lair'
 type ERROR_EVENT = 'error'
 const ERROR_EVENT = 'error'
-type LOG_EVENT = 'log'
-const LOG_EVENT = 'log'
+type HOLOCHAIN_LOG_EVENT = 'holochain_log'
+const HOLOCHAIN_LOG_EVENT = 'holochain_log'
+type WASM_LOG_EVENT = 'wasm_log'
+const WASM_LOG_EVENT = 'wasm_log'
 type HOLOCHAIN_RUNNER_QUIT = 'holochain_runner_quit'
 const HOLOCHAIN_RUNNER_QUIT = 'holochain_runner_quit'
 export {
@@ -33,7 +34,8 @@ export {
   APP_PORT_EVENT,
   LAIR_SOCKET_EVENT,
   ERROR_EVENT,
-  LOG_EVENT,
+  HOLOCHAIN_LOG_EVENT,
+  WASM_LOG_EVENT,
   HOLOCHAIN_RUNNER_QUIT,
 }
 
@@ -44,7 +46,8 @@ export declare interface StatusUpdates {
       | APP_PORT_EVENT
       | LAIR_SOCKET_EVENT
       | ERROR_EVENT
-      | LOG_EVENT
+      | HOLOCHAIN_LOG_EVENT
+      | WASM_LOG_EVENT
       | HOLOCHAIN_RUNNER_QUIT,
     listener: (status: StateSignal | string | Error) => void
   ): this
@@ -60,8 +63,11 @@ export class StatusUpdates extends EventEmitter {
   emitLairSocket(socket: string): void {
     this.emit(LAIR_SOCKET_EVENT, socket)
   }
-  emitLog(line: string): void {
-    this.emit(LOG_EVENT, line)
+  emitWasmLog(line: string): void {
+    this.emit(WASM_LOG_EVENT, line)
+  }
+  emitHolochainLog(line: string): void {
+    this.emit(HOLOCHAIN_LOG_EVENT, line)
   }
   emitError(error: Error): void {
     this.emit(ERROR_EVENT, error)
@@ -138,7 +144,19 @@ export async function runHolochain(
   // of the given options that it can digest
   const holochainRunnerHandle = childProcess.spawn(
     holochainRunnerBinaryPath,
-    optionsArray
+    optionsArray,
+    {
+      env: {
+        RUST_LOG: 'info,' +
+        // this thrashes on startup
+        'wasmer_compiler_cranelift=error,' +
+        // this gives a bunch of warnings about how long db accesses are taking, tmi
+        'holochain_sqlite::db::access=error,' +
+        // this gives a lot of "search_and_discover_peer_connect: no peers found, retrying after delay" messages on INFO
+        'kitsune_p2p::spawn::actor::discover=error'
+        // RUST_LOG: 'info',
+      }
+    }
   )
   // write the passphrase through stdin
   holochainRunnerHandle.stdin.write(options.passphrase)
@@ -148,24 +166,28 @@ export async function runHolochain(
   holochainRunnerHandle.stdout.pipe(split()).on('data', (line: string) => {
     // Check for state signal
     const checkIfSignal = stdoutToStateSignal(line)
+    const appPort = parseForAppPort(line)
+    const lairKeystoreSocket = parseForLairKeystoreSocket(line)
     if (checkIfSignal !== null) {
       statusEmitter.emitStatus(checkIfSignal)
-    }
-    // Check for app port
-    const appPort = parseForAppPort(line)
-    if (appPort !== null) {
+    } else if (appPort !== null) {
       statusEmitter.emitAppPort(appPort)
-    }
-    // Check for lair keystore socket
-    const lairKeystoreSocket = parseForLairKeystoreSocket(line)
-    if (lairKeystoreSocket !== null) {
+    } else if (lairKeystoreSocket !== null) {
       statusEmitter.emitLairSocket(lairKeystoreSocket)
+    } else {
+      console.log('this should be a wasm log', line)
+      // per this discussion
+      // https://github.com/holochain/holochain/issues/1449#issuecomment-1499888044
+      // WASM logs are the ones being passed through stdout
+      statusEmitter.emitWasmLog(line)
     }
-    statusEmitter.emitLog(line)
   })
-  holochainRunnerHandle.stderr.on('data', (error) => {
+  holochainRunnerHandle.stderr.pipe(split()).on('data', (line: string) => {
     if (holochainRunnerHandle.killed) return;
-    statusEmitter.emitError(new Error(error.toString()))
+    // per this discussion
+    // https://github.com/holochain/holochain/issues/1449#issuecomment-1499888044
+    // holochain logs are the ones being passed through stderr
+    statusEmitter.emitHolochainLog(line)
   })
   holochainRunnerHandle.on('error', (error) => {
     if (holochainRunnerHandle.killed) return;

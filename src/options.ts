@@ -38,6 +38,9 @@ export function constructOptions(options: HolochainRunnerOptions): string[] {
   if (options.gossipArcClamping) {
     optionsArr = optionsArr.concat(['--gossip-arc-clamping', options.gossipArcClamping])
   }
+  if (options.logging) {
+    optionsArr = optionsArr.concat(['--logging', options.logging])
+  }
   // happPath is required, and needs to be passed at the end
   optionsArr = optionsArr.concat([options.happPath])
   if (options.datastorePath) {
@@ -55,11 +58,11 @@ export interface HolochainRunnerOptions {
   appWsPort?: number
   adminWsPort?: number
   webrtcSignalUrl?: string
-  // membraneProof?: string // base64
   bootstrapUrl?: string
   networkSeed?: string
   keystorePath?: string
   gossipArcClamping?: "full" | "empty" | "none"
+  logging?: 'None' | 'Log' | 'Compact' | 'Json'
 }
 
 // exposing this externally instead

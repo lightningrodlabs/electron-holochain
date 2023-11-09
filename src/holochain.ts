@@ -175,7 +175,6 @@ export async function runHolochain(
     } else if (lairKeystoreSocket !== null) {
       statusEmitter.emitLairSocket(lairKeystoreSocket)
     } else {
-      console.log('this should be a wasm log', line)
       // per this discussion
       // https://github.com/holochain/holochain/issues/1449#issuecomment-1499888044
       // WASM logs are the ones being passed through stdout

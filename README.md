@@ -1,8 +1,8 @@
 # electron-holochain
 
-**Built-in Holochain Version: [v0.2.3-beta-rc.1](https://github.com/holochain/holochain/blob/main-0.2/CHANGELOG.md#20230930114759)**
+**Built-in Holochain Version: [v0.4.0-dev.5](https://github.com/holochain/holochain/blob/develop/CHANGELOG.md#20240529004721)**
 
-**Important: Expects an HAPP built with HDK [~v0.2.2](https://docs.rs/hdk/0.2.2/hdk/index.html) and HDI [~v0.3.2](https://docs.rs/hdi/0.3.2/hdi/index.html)**
+**Important: Expects an HAPP built with HDK [~v0.4.0-dev.5](https://docs.rs/hdk/0.4.0-dev.5/hdk/index.html) and HDI [~v0.5.0-dev.5](https://docs.rs/hdi/0.5.0-dev.5/hdi/index.html)**
 
 An alternative Holochain conductor binary useful for quick startup and including handling of key generation and hApp installation. Useful for production and development environments.
 
@@ -67,7 +67,6 @@ statusEmitter.on(ERROR_EVENT, (error: Error) => {
 await shutdown()
 ```
 
-
 ## Updating holochain-runner version and releasing
 
 Go to [./src/downloadBinaries.ts](./src/downloadBinaries.ts) and search for 'version-bump'.
@@ -78,7 +77,7 @@ To get this to trigger, run `npm run try-binary-download`.
 
 ## Publishing
 
-Bump the package.json version. 
+Bump the package.json version.
 Commit. Tag. Push.
 Run `npm run build` to build the typescript.
 Then run `npm publish --access public` to publish to npmjs.com.

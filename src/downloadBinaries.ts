@@ -47,7 +47,7 @@ async function downloadBinaries(tag: string) {
   }
   const holochainRunnerFilenames = {
     win32: "holochain-runner-x86_64-pc-windows-msvc.tar.gz",
-    darwinX64: "holochain-runner-x86_64-apple-darwin.tar.gz",
+    darwinX64: "holochain-runner-aarch64-apple-darwin.tar.gz",
     darwinArm64: "holochain-runner-arm64-apple-darwin.tar.gz",
     linux: "holochain-runner-x86_64-unknown-linux-gnu.tar.gz",
   };
